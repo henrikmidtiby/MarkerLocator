@@ -178,25 +178,29 @@ class CameraDriver:
     Purpose: capture images from a camera and delegate procesing of the 
     images to a different class.
     '''
-    def __init__(self):
+    def __init__(self, markerOrders = [7, 8], defaultKernelSize = 21, scalingParameter = 2500):
         cv.NamedWindow('filterdemo', cv.CV_WINDOW_AUTOSIZE)
         self.camera = cv.CaptureFromCAM(0)
         self.currentFrame = None
         self.processedFrame = None
         self.running = True
-        self.trackers = [ImageAnalyzer(1), ImageAnalyzer(1)]
-        self.trackers[0].addMarkerToTrack(7, 21, 2500)
-        self.trackers[1].addMarkerToTrack(8, 21, 2500)
-        self.windowedTrackers = [TrackerInWindowMode(7), TrackerInWindowMode(8)]
+        self.trackers = []
+        self.windowedTrackers = []
+        self.oldLocations = []
+        for markerOrder in markerOrders:
+            temp = ImageAnalyzer(1)
+            temp.addMarkerToTrack(markerOrder, defaultKernelSize, scalingParameter)
+            self.trackers.append(temp)
+            self.windowedTrackers.append(TrackerInWindowMode(markerOrder))
+            self.oldLocations.append(None)
         self.cnt = 0
-        self.oldLocations = [None, None]
 
     
     def getImage(self):
         self.currentFrame = cv.QueryFrame(self.camera)
         
     def processFrame(self):
-        for k in [0, 1]:
+        for k in range(len(self.trackers)):
             if(self.oldLocations[k] is None):
                 self.processedFrame = self.trackers[k].analyzeImage(self.currentFrame)
                 markerX = self.trackers[k].markerLocationsX[0]
@@ -209,44 +213,23 @@ class CameraDriver:
     def showProcessedFrame(self):
         cv.ShowImage('filterdemo', self.processedFrame)
         pass
+
+    def resetAllLocations(self):
+        for k in range(len(self.trackers)):
+            self.oldLocations[k] = None
         
     def handleKeyboardEvents(self):
         key = cv.WaitKey(20)
         if key == 1048603: # Esc
             self.running = False
         if key == 1048690: # r
-            self.oldLocations[0] = None
-            self.oldLocations[1] = None
+            print("Resetting")
+            self.resetAllLocations()
         if key == 1048691: # s
             # save image
             print("Saving image")
             cv.SaveImage("output/filename%03d.png" % self.cnt, self.currentFrame)
             self.cnt = self.cnt + 1
-
-
-class MultipleMarkerTracker:
-    def __init__(self):
-        self.trackedMarkers = []
-        pass
-    
-    def addMarkerToTrack(self, order, kernelsize, scaleparameter):
-        newTracker = MarkerTracker(order, kernelsize, scaleparameter)
-        self.trackedMarkers.append(newTracker)
-        
-
-def analyzeImage(img):
-    return img;
-
-def main():
-    cd = CameraDriver()
-    while cd.running:
-        cd.getImage()
-        img = cd.currentFrame
-        img = analyzeImage(img)
-        cd.processedFrame = img
-        cd.showProcessedFrame()
-        cd.handleKeyboardEvents()
-    pass
 
 
 def mainTwo():
@@ -258,7 +241,7 @@ def mainTwo():
     print 'function vers1 takes %f' %(t1-t0)
     print 'function vers2 takes %f' %(t2-t1)
     
-    cd = CameraDriver()
+    cd = CameraDriver([5, 6])
     t0 = time()
      
     while cd.running:
