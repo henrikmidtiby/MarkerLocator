@@ -154,7 +154,6 @@ class TrackerInWindowMode:
         
     def locateMarker(self):
         (xm, ym) = self.markerTracker.locateMarker(self.frameGray)
-        print((xm, ym))
         #xm = 50
         #ym = 50
         cv.Line(self.reducedImage, (0, ym), (self.originalImage.width, ym), (0, 0, 255)) # B, G, R
@@ -162,6 +161,7 @@ class TrackerInWindowMode:
         
         xm = xm + self.subImagePosition[0]
         ym = ym + self.subImagePosition[1]
+        print((xm, ym))
         return [xm, ym]
         
     def showCroppedImage(self):
