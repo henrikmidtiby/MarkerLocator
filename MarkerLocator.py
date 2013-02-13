@@ -113,13 +113,13 @@ class ImageAnalyzer:
         return frame
 
 class TrackerInWindowMode:
-    def __init__(self):
+    def __init__(self, order = 7):
         cv.NamedWindow('reducedWindow', cv.CV_WINDOW_AUTOSIZE)
         self.windowWidth = 100
         self.windowHeight = 100
         self.frameGray = cv.CreateImage ((self.windowWidth, self.windowHeight), cv.IPL_DEPTH_32F, 1)
         self.originalImage = cv.CreateImage((self.windowWidth, self.windowHeight), cv.IPL_DEPTH_32F, 3)
-        self.markerTracker = MarkerTracker(7, 21, 2500)
+        self.markerTracker = MarkerTracker(order, 21, 2500)
         self.trackerIsInitialized = False
         self.subImagePosition = None
         pass
@@ -185,24 +185,34 @@ class CameraDriver:
         self.running = True
         self.tracker = ImageAnalyzer(1)
         self.tracker.addMarkerToTrack(7, 21, 2500)
-        #self.tracker.addMarkerToTrack(8, 21, 2500)
-        self.windowedTracker = TrackerInWindowMode()
+        self.tracker.addMarkerToTrack(8, 21, 2500)
+        self.windowedTracker7 = TrackerInWindowMode(7)
+        self.windowedTracker8 = TrackerInWindowMode(8)
         self.cnt = 0
-        self.oldLocation = None
+        self.oldLocation7 = None
+        self.oldLocation8 = None
 
     
     def getImage(self):
         self.currentFrame = cv.QueryFrame(self.camera)
         
     def processFrame(self):
-        if(self.oldLocation is None):
+        if(self.oldLocation7 is None):
             self.processedFrame = self.tracker.analyzeImage(self.currentFrame)
             markerX = self.tracker.markerLocationsX[0]
             markerY = self.tracker.markerLocationsY[0]
-            self.oldLocation = [markerX, markerY]
-        self.windowedTracker.cropFrame(self.currentFrame, self.oldLocation[0], self.oldLocation[1])
-        self.oldLocation = self.windowedTracker.locateMarker()
-        self.windowedTracker.showCroppedImage()
+            self.oldLocation7 = [markerX, markerY]
+        self.windowedTracker7.cropFrame(self.currentFrame, self.oldLocation7[0], self.oldLocation7[1])
+        self.oldLocation7 = self.windowedTracker7.locateMarker()
+        self.windowedTracker7.showCroppedImage()
+        if(self.oldLocation8 is None):
+            self.processedFrame = self.tracker.analyzeImage(self.currentFrame)
+            markerX = self.tracker.markerLocationsX[1]
+            markerY = self.tracker.markerLocationsY[1]
+            self.oldLocation8 = [markerX, markerY]
+        self.windowedTracker8.cropFrame(self.currentFrame, self.oldLocation8[0], self.oldLocation8[1])
+        self.oldLocation8 = self.windowedTracker8.locateMarker()
+        self.windowedTracker8.showCroppedImage()
     
     def showProcessedFrame(self):
         cv.ShowImage('filterdemo', self.processedFrame)
