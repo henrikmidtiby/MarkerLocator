@@ -222,6 +222,9 @@ class CameraDriver:
         key = cv.WaitKey(20)
         if key == 1048603: # Esc
             self.running = False
+        if key == 1048690: # r
+            self.oldLocation7 = None
+            self.oldLocation8 = None
         if key == 1048691: # s
             # save image
             print("Saving image")
