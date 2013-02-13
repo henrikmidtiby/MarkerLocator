@@ -186,33 +186,24 @@ class CameraDriver:
         self.tracker = ImageAnalyzer(1)
         self.tracker.addMarkerToTrack(7, 21, 2500)
         self.tracker.addMarkerToTrack(8, 21, 2500)
-        self.windowedTracker7 = TrackerInWindowMode(7)
-        self.windowedTracker8 = TrackerInWindowMode(8)
+        self.windowedTrackers = [TrackerInWindowMode(7), TrackerInWindowMode(8)]
         self.cnt = 0
-        self.oldLocation7 = None
-        self.oldLocation8 = None
+        self.oldLocations = [None, None]
 
     
     def getImage(self):
         self.currentFrame = cv.QueryFrame(self.camera)
         
     def processFrame(self):
-        if(self.oldLocation7 is None):
-            self.processedFrame = self.tracker.analyzeImage(self.currentFrame)
-            markerX = self.tracker.markerLocationsX[0]
-            markerY = self.tracker.markerLocationsY[0]
-            self.oldLocation7 = [markerX, markerY]
-        self.windowedTracker7.cropFrame(self.currentFrame, self.oldLocation7[0], self.oldLocation7[1])
-        self.oldLocation7 = self.windowedTracker7.locateMarker()
-        self.windowedTracker7.showCroppedImage()
-        if(self.oldLocation8 is None):
-            self.processedFrame = self.tracker.analyzeImage(self.currentFrame)
-            markerX = self.tracker.markerLocationsX[1]
-            markerY = self.tracker.markerLocationsY[1]
-            self.oldLocation8 = [markerX, markerY]
-        self.windowedTracker8.cropFrame(self.currentFrame, self.oldLocation8[0], self.oldLocation8[1])
-        self.oldLocation8 = self.windowedTracker8.locateMarker()
-        self.windowedTracker8.showCroppedImage()
+        for k in [0, 1]:
+            if(self.oldLocations[k] is None):
+                self.processedFrame = self.tracker.analyzeImage(self.currentFrame)
+                markerX = self.tracker.markerLocationsX[k]
+                markerY = self.tracker.markerLocationsY[k]
+                self.oldLocations[k] = [markerX, markerY]
+            self.windowedTrackers[k].cropFrame(self.currentFrame, self.oldLocations[k][0], self.oldLocations[k][1])
+            self.oldLocations[k] = self.windowedTrackers[k].locateMarker()
+            self.windowedTrackers[k].showCroppedImage()
     
     def showProcessedFrame(self):
         cv.ShowImage('filterdemo', self.processedFrame)
@@ -223,8 +214,8 @@ class CameraDriver:
         if key == 1048603: # Esc
             self.running = False
         if key == 1048690: # r
-            self.oldLocation7 = None
-            self.oldLocation8 = None
+            self.oldLocations[0] = None
+            self.oldLocations[1] = None
         if key == 1048691: # s
             # save image
             print("Saving image")
