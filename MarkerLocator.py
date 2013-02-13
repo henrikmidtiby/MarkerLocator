@@ -114,7 +114,7 @@ class ImageAnalyzer:
 
 class TrackerInWindowMode:
     def __init__(self, order = 7):
-        cv.NamedWindow('reducedWindow', cv.CV_WINDOW_AUTOSIZE)
+        #cv.NamedWindow('reducedWindow', cv.CV_WINDOW_AUTOSIZE)
         self.windowWidth = 100
         self.windowHeight = 100
         self.frameGray = cv.CreateImage ((self.windowWidth, self.windowHeight), cv.IPL_DEPTH_32F, 1)
@@ -165,7 +165,8 @@ class TrackerInWindowMode:
         return [xm, ym]
         
     def showCroppedImage(self):
-        cv.ShowImage('reducedWindow', self.reducedImage)
+        pass
+        #cv.ShowImage('reducedWindow', self.reducedImage)
         #cv.ShowImage('reducedWindow', self.originalImage)
         #cv.ShowImage('reducedWindow', self.frameGray)
         #cv.ShowImage('reducedWindow', self.markerTracker.frameSumSq)
