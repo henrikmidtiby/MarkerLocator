@@ -183,9 +183,9 @@ class CameraDriver:
         self.currentFrame = None
         self.processedFrame = None
         self.running = True
-        self.tracker = ImageAnalyzer(1)
-        self.tracker.addMarkerToTrack(7, 21, 2500)
-        self.tracker.addMarkerToTrack(8, 21, 2500)
+        self.trackers = [ImageAnalyzer(1), ImageAnalyzer(1)]
+        self.trackers[0].addMarkerToTrack(7, 21, 2500)
+        self.trackers[1].addMarkerToTrack(8, 21, 2500)
         self.windowedTrackers = [TrackerInWindowMode(7), TrackerInWindowMode(8)]
         self.cnt = 0
         self.oldLocations = [None, None]
@@ -197,9 +197,9 @@ class CameraDriver:
     def processFrame(self):
         for k in [0, 1]:
             if(self.oldLocations[k] is None):
-                self.processedFrame = self.tracker.analyzeImage(self.currentFrame)
-                markerX = self.tracker.markerLocationsX[k]
-                markerY = self.tracker.markerLocationsY[k]
+                self.processedFrame = self.trackers[k].analyzeImage(self.currentFrame)
+                markerX = self.trackers[k].markerLocationsX[0]
+                markerY = self.trackers[k].markerLocationsY[0]
                 self.oldLocations[k] = [markerX, markerY]
             self.windowedTrackers[k].cropFrame(self.currentFrame, self.oldLocations[k][0], self.oldLocations[k][1])
             self.oldLocations[k] = self.windowedTrackers[k].locateMarker()
