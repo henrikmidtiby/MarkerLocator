@@ -220,13 +220,15 @@ class CameraDriver:
             self.oldLocations[k] = None
         
     def handleKeyboardEvents(self):
-        key = cv.WaitKey(20)
-        if key == 1048603: # Esc
+        key = cv.WaitKey(20) 
+        # Discard higher order bit, http://permalink.gmane.org/gmane.comp.lib.opencv.devel/410
+        key = key & 0xff
+        if key == 27: # Esc
             self.running = False
-        if key == 1048690: # r
+        if key == 114: # R
             print("Resetting")
             self.resetAllLocations()
-        if key == 1048691: # s
+        if key == 115: # S
             # save image
             print("Saving image")
             cv.SaveImage("output/filename%03d.png" % self.cnt, self.currentFrame)
