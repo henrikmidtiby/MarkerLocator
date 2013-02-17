@@ -215,9 +215,10 @@ class CameraDriver:
                 markerX = self.trackers[k].markerLocationsX[0]
                 markerY = self.trackers[k].markerLocationsY[0]
                 self.oldLocations[k] = [markerX, markerY]
-            self.windowedTrackers[k].cropFrame(self.currentFrame, self.oldLocations[k][0], self.oldLocations[k][1])
-            self.oldLocations[k] = self.windowedTrackers[k].locateMarker()
-            self.windowedTrackers[k].showCroppedImage()
+            else:
+                self.windowedTrackers[k].cropFrame(self.currentFrame, self.oldLocations[k][0], self.oldLocations[k][1])
+                self.oldLocations[k] = self.windowedTrackers[k].locateMarker()
+                self.windowedTrackers[k].showCroppedImage()
     
     def showProcessedFrame(self):
         cv.ShowImage('filterdemo', self.processedFrame)
