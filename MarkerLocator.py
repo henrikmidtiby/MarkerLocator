@@ -233,7 +233,7 @@ class CameraDriver:
             self.cnt = self.cnt + 1
 
 
-def mainTwo():
+def main():
     
     t0 = time()
     t1 = time()
@@ -257,4 +257,4 @@ def mainTwo():
     print("Stopping")
 
 
-mainTwo()
+main()
