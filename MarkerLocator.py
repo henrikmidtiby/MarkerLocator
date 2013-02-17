@@ -162,7 +162,7 @@ class TrackerInWindowMode:
         
         xm = xm + self.subImagePosition[0]
         ym = ym + self.subImagePosition[1]
-        print((xm, ym))
+        #print((xm, ym))
         return [xm, ym]
         
     def showCroppedImage(self):
@@ -249,7 +249,7 @@ def main():
      
     while cd.running:
         (t1, t0) = (t0, time())
-        print "time for one iteration: %f" % (t0 - t1)
+      #  print "time for one iteration: %f" % (t0 - t1)
         cd.getImage()
         cd.processFrame()
         cd.showProcessedFrame()
