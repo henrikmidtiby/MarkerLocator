@@ -2,7 +2,6 @@
 from time import time
 import sys
 import numpy as np
-#import cv
 import cv2.cv as cv
 
 '''
@@ -188,14 +187,20 @@ class CameraDriver:
     images to a different class.
     '''
     def __init__(self, markerOrders = [7, 8], defaultKernelSize = 21, scalingParameter = 2500):
+        # Initialize camera driver.
+        # Open output window.
         cv.NamedWindow('filterdemo', cv.CV_WINDOW_AUTOSIZE)
+        # Select the camera where the images should be grabbed from.
         self.camera = cv.CaptureFromCAM(0)
+        # Storage for image processing.
         self.currentFrame = None
         self.processedFrame = None
         self.running = True
+        # Storage for trackers.
         self.trackers = []
         self.windowedTrackers = []
         self.oldLocations = []
+        # Initialize trackers.
         for markerOrder in markerOrders:
             temp = ImageAnalyzer(1)
             temp.addMarkerToTrack(markerOrder, defaultKernelSize, scalingParameter)
@@ -206,16 +211,20 @@ class CameraDriver:
 
     
     def getImage(self):
+        # Get image from camera.
         self.currentFrame = cv.QueryFrame(self.camera)
         
     def processFrame(self):
+        # Locate all markers in image.
         for k in range(len(self.trackers)):
             if(self.oldLocations[k] is None):
+                # Previous marker location is unknown, search in the entire image.
                 self.processedFrame = self.trackers[k].analyzeImage(self.currentFrame)
                 markerX = self.trackers[k].markerLocationsX[0]
                 markerY = self.trackers[k].markerLocationsY[0]
                 self.oldLocations[k] = [markerX, markerY]
             else:
+                # Search for marker around the old location.
                 self.windowedTrackers[k].cropFrame(self.currentFrame, self.oldLocations[k][0], self.oldLocations[k][1])
                 self.oldLocations[k] = self.windowedTrackers[k].locateMarker()
                 self.windowedTrackers[k].showCroppedImage()
@@ -225,10 +234,12 @@ class CameraDriver:
         pass
 
     def resetAllLocations(self):
+        # Reset all markers locations, forcing a full search on the next iteration.
         for k in range(len(self.trackers)):
             self.oldLocations[k] = None
         
     def handleKeyboardEvents(self):
+        # Listen for keyboard events and take relevant actions.
         key = cv.WaitKey(20) 
         # Discard higher order bit, http://permalink.gmane.org/gmane.comp.lib.opencv.devel/410
         key = key & 0xff
@@ -244,11 +255,14 @@ class CameraDriver:
             self.cnt = self.cnt + 1
 
     def returnPositions(self):
+        # Return list of all marker locations.
         return self.oldLocations
 
 
 class RosPublisher:
     def __init__(self, markers):
+        # Instantiate ros publisher with information about the markers that 
+        # will be tracked.
         self.pub = []
         self.markers = markers
         for i in markers:
