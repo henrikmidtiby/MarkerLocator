@@ -29,9 +29,9 @@ class MarkerTracker:
         self.matReal = cv.CreateMat(kernelSize, kernelSize, cv.CV_32FC1)
         self.matImag = cv.CreateMat(kernelSize, kernelSize, cv.CV_32FC1)
         for i in range(kernelSize):
-        	for j in range(kernelSize):
-        		self.matReal[i, j] = kernelReal[i][j] / scaleFactor
-        		self.matImag[i, j] = kernelImag[i][j] / scaleFactor
+            for j in range(kernelSize):
+                self.matReal[i, j] = kernelReal[i][j] / scaleFactor
+                self.matImag[i, j] = kernelImag[i][j] / scaleFactor
         self.lastMarkerLocation = (None, None)
                   
     def generateSymmetryDetectorKernel(self, order, kernelsize):
