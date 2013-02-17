@@ -234,6 +234,8 @@ class CameraDriver:
             cv.SaveImage("output/filename%03d.png" % self.cnt, self.currentFrame)
             self.cnt = self.cnt + 1
 
+    def returnPositions(self):
+        return self.oldLocations
 
 def main():
     
@@ -254,7 +256,9 @@ def main():
         cd.processFrame()
         cd.showProcessedFrame()
         cd.handleKeyboardEvents()
-        print 
+        y = cd.returnPositions()  
+        print y
+
         
     print("Stopping")
 
