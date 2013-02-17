@@ -1,3 +1,4 @@
+#!/usr/bin/env python
 from time import time
 import sys
 import numpy as np
@@ -10,6 +11,13 @@ Script developed by Henrik Skov Midtiby (henrikmidtiby@gmail.com).
 Provided for free but use at your own risk.
 '''
 
+PublishToROS = False
+
+if PublishToROS:
+    import roslib; roslib.load_manifest('frobitLocator')
+    import rospy
+    from geometry_msgs.msg import Point
+    
 
 class MarkerTracker:
     '''
@@ -237,6 +245,7 @@ class CameraDriver:
     def returnPositions(self):
         return self.oldLocations
 
+
 def main():
     
     t0 = time()
@@ -246,7 +255,17 @@ def main():
     print 'function vers1 takes %f' %(t1-t0)
     print 'function vers2 takes %f' %(t2-t1)
     
-    cd = CameraDriver([5, 6])
+    toFind = [7,4, 5 ,2]    
+
+    if PublishToROS:    
+        pup = [ ]   
+ 
+        for i in toFind:
+            pup.append( rospy.Publisher('positionPuplisher' + str(i), Point)  )       
+       
+        rospy.init_node('FrobitLocator')   
+       
+    cd = CameraDriver(toFind)
     t0 = time()
      
     while cd.running:
@@ -256,10 +275,17 @@ def main():
         cd.processFrame()
         cd.showProcessedFrame()
         cd.handleKeyboardEvents()
-        y = cd.returnPositions()  
-        print y
-
-        
+        y = cd.returnPositions()     
+        if PublishToROS:
+            j = 0        
+            for i in toFind:
+                print 'x%i %i  y%i %i' %(i, y[j][0], i, y[j][1])
+                #ros function        
+                pup[j].publish(  Point( y[j][0], y[j][1], 0 )  )
+                j = j + 1                
+        else:
+            print y
+            
     print("Stopping")
 
 
