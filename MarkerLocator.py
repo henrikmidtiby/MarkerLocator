@@ -93,6 +93,7 @@ class ImageAnalyzer:
     
     # Is called with a colour image.
     def analyzeImage(self, frame):
+        assert(frame.nChannels == 3)
         if(self.subClassesInitialized is False):
             self.initializeSubClasses(frame)
 
