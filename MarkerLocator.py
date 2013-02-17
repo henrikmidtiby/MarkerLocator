@@ -8,6 +8,10 @@ import cv2.cv as cv
 2012-10-10
 Script developed by Henrik Skov Midtiby (henrikmidtiby@gmail.com).
 Provided for free but use at your own risk.
+
+2013-02-13 
+Structural changes allows simultaneous tracking of several markers.
+Frederik Hagel added code to publish marker locations to ROS.
 '''
 
 PublishToROS = False
