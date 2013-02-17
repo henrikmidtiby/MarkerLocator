@@ -246,6 +246,23 @@ class CameraDriver:
         return self.oldLocations
 
 
+class RosPublisher:
+    def __init__(self, markers):
+        self.pub = []
+        self.markers = markers
+        for i in markers:
+            self.pup.append( rospy.Publisher('positionPuplisher' + str(i), Point)  )       
+        rospy.init_node('FrobitLocator')   
+
+    def publishMarkerLocations(self, locations):
+        j = 0        
+        for i in self.markers:
+            print 'x%i %i  y%i %i' %(i, locations[j][0], i, locations[j][1])
+            #ros function        
+            self.pup[j].publish(  Point( locations[j][0], locations[j][1], 0 )  )
+            j = j + 1                
+        
+
 def main():
     
     t0 = time()
@@ -257,13 +274,8 @@ def main():
     
     toFind = [7,4, 5 ,2]    
 
-    if PublishToROS:    
-        pup = [ ]   
- 
-        for i in toFind:
-            pup.append( rospy.Publisher('positionPuplisher' + str(i), Point)  )       
-       
-        rospy.init_node('FrobitLocator')   
+    if PublishToROS:  
+        RP = RosPublisher(toFind)
        
     cd = CameraDriver(toFind)
     t0 = time()
@@ -277,12 +289,7 @@ def main():
         cd.handleKeyboardEvents()
         y = cd.returnPositions()     
         if PublishToROS:
-            j = 0        
-            for i in toFind:
-                print 'x%i %i  y%i %i' %(i, y[j][0], i, y[j][1])
-                #ros function        
-                pup[j].publish(  Point( y[j][0], y[j][1], 0 )  )
-                j = j + 1                
+            RP.publishMarkerLocations(y)
         else:
             print y
             
