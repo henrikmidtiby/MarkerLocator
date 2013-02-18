@@ -3,6 +3,7 @@ from time import time
 import sys
 import numpy as np
 import cv2.cv as cv
+import math
 
 '''
 2012-10-10
@@ -28,7 +29,7 @@ class MarkerTracker:
     '''
     def __init__(self, order, kernelSize, scaleFactor):
         (kernelReal, kernelImag) = self.generateSymmetryDetectorKernel(order, kernelSize)
-            
+        self.order = order
         self.matReal = cv.CreateMat(kernelSize, kernelSize, cv.CV_32FC1)
         self.matImag = cv.CreateMat(kernelSize, kernelSize, cv.CV_32FC1)
         for i in range(kernelSize):
@@ -36,6 +37,7 @@ class MarkerTracker:
                 self.matReal[i, j] = kernelReal[i][j] / scaleFactor
                 self.matImag[i, j] = kernelImag[i][j] / scaleFactor
         self.lastMarkerLocation = (None, None)
+        self.orientation = None
                   
     def generateSymmetryDetectorKernel(self, order, kernelsize):
         valueRange = np.linspace(-1, 1, kernelsize);
@@ -50,25 +52,51 @@ class MarkerTracker:
 
     def allocateSpaceGivenFirstFrame(self, frame):
         self.newFrameImage32F = cv.CreateImage((frame.width, frame.height), cv.IPL_DEPTH_32F, 3)
+        self.frameReal = cv.CreateImage ((frame.width, frame.height), cv.IPL_DEPTH_32F, 1)
+        self.frameImag = cv.CreateImage ((frame.width, frame.height), cv.IPL_DEPTH_32F, 1)
         self.frameRealSq = cv.CreateImage ((frame.width, frame.height), cv.IPL_DEPTH_32F, 1)
         self.frameImagSq = cv.CreateImage ((frame.width, frame.height), cv.IPL_DEPTH_32F, 1)
         self.frameSumSq = cv.CreateImage ((frame.width, frame.height), cv.IPL_DEPTH_32F, 1)
 
     
     def locateMarker(self, frame):
-        frameReal = cv.CloneImage(frame)
-        frameImag = cv.CloneImage(frame)
+        self.frameReal = cv.CloneImage(frame)
+        self.frameImag = cv.CloneImage(frame)
 
-        cv.Filter2D(frameReal, frameReal, self.matReal)
-        cv.Filter2D(frameImag, frameImag, self.matImag)
-        cv.Mul(frameReal, frameReal, self.frameRealSq)
-        cv.Mul(frameImag, frameImag, self.frameImagSq)
+        cv.Filter2D(self.frameReal, self.frameReal, self.matReal)
+        cv.Filter2D(self.frameImag, self.frameImag, self.matImag)
+        cv.Mul(self.frameReal, self.frameReal, self.frameRealSq)
+        cv.Mul(self.frameImag, self.frameImag, self.frameImagSq)
         cv.Add(self.frameRealSq, self.frameImagSq, self.frameSumSq)
         
         min_val, max_val, min_loc, max_loc = cv.MinMaxLoc(self.frameSumSq)
         self.lastMarkerLocation = max_loc
         (xm, ym) = max_loc
+        self.determineMarkerOrientation(frame)
         return max_loc
+
+    def determineMarkerOrientation(self, frame):    
+        (xm, ym) = self.lastMarkerLocation
+        realval = cv.Get2D(self.frameReal, ym, xm)[0]
+        imagval = cv.Get2D(self.frameImag, ym, xm)[0]
+        self.orientation = (math.atan2(-realval, imagval) - math.pi / 2) / self.order
+
+        maxValue = 0
+        maxOrient = 0
+        for k in range(self.order):
+            orient = self.orientation + 2 * k * math.pi / self.order
+            xm2 = int(xm + 30*math.cos(orient))
+            ym2 = int(ym + 30*math.sin(orient))
+            try:
+                intensity = cv.Get2D(frame, ym2, xm2)
+                if(intensity[0] > maxValue):
+                    maxValue = intensity[0]
+                    maxOrient = orient
+            except:
+                pass
+
+        self.orientation = maxOrient
+            
 
 class ImageAnalyzer:
     '''
@@ -168,8 +196,15 @@ class TrackerInWindowMode:
         (xm, ym) = self.markerTracker.locateMarker(self.frameGray)
         #xm = 50
         #ym = 50
-        cv.Line(self.reducedImage, (0, ym), (self.originalImage.width, ym), (0, 0, 255)) # B, G, R
-        cv.Line(self.reducedImage, (xm, 0), (xm, self.originalImage.height), (0, 0, 255))
+        #cv.Line(self.reducedImage, (0, ym), (self.originalImage.width, ym), (0, 0, 255)) # B, G, R
+        #cv.Line(self.reducedImage, (xm, 0), (xm, self.originalImage.height), (0, 0, 255))
+
+        orientation = self.markerTracker.orientation
+        cv.Circle(self.reducedImage, (xm, ym), 4, (55, 55, 255), 2)
+        xm2 = int(xm + 50*math.cos(orientation))
+        ym2 = int(ym + 50*math.sin(orientation))
+        cv.Line(self.reducedImage, (xm, ym), (xm2, ym2), (255, 0, 0), 2)
+
         
         xm = xm + self.subImagePosition[0]
         ym = ym + self.subImagePosition[1]
@@ -233,6 +268,16 @@ class CameraDriver:
                 self.oldLocations[k] = self.windowedTrackers[k].locateMarker()
                 self.windowedTrackers[k].showCroppedImage()
     
+    def drawDetectedMarkers(self):
+        for k in range(len(self.trackers)):
+            xm = self.oldLocations[k][0]
+            ym = self.oldLocations[k][1]
+            cv.Circle(self.processedFrame, (xm, ym), 4, (55, 55, 255), 2)
+            xm2 = xm + 20
+            ym2 = ym + 20
+            cv.Line(self.processedFrame, (xm, ym), (xm2, ym2), (255, 0, 0), 2)
+
+    
     def showProcessedFrame(self):
         cv.ShowImage('filterdemo', self.processedFrame)
         pass
@@ -291,7 +336,7 @@ def main():
     print 'function vers1 takes %f' %(t1-t0)
     print 'function vers2 takes %f' %(t2-t1)
     
-    toFind = [7,4, 5 ,2]    
+    toFind = [7, 9]    
 
     if PublishToROS:  
         RP = RosPublisher(toFind)
@@ -304,13 +349,15 @@ def main():
       #  print "time for one iteration: %f" % (t0 - t1)
         cd.getImage()
         cd.processFrame()
+        #cd.drawDetectedMarkers()
         cd.showProcessedFrame()
         cd.handleKeyboardEvents()
         y = cd.returnPositions()     
         if PublishToROS:
             RP.publishMarkerLocations(y)
         else:
-            print y
+            pass
+            #print y
             
     print("Stopping")
 
