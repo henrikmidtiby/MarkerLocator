@@ -329,9 +329,9 @@ class RosPublisher:
     def publishMarkerLocations(self, locations):
         j = 0        
         for i in self.markers:
-            print 'x%i %i  y%i %i' %(i, locations[j][0], i, locations[j][1])
+            print 'x%i %i  y%i %i  o%i %i' %(i, locations[j][0], i, locations[j][1], i, locations[j][2])
             #ros function        
-            self.pup[j].publish(  Point( locations[j][0], locations[j][1], 0 )  )
+            self.pup[j].publish(  Point( locations[j][0], locations[j][1], locations[j][2] )  )
             j = j + 1                
         
 
