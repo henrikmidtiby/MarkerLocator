@@ -95,7 +95,14 @@ class MarkerTracker:
             except:
                 pass
 
-        self.orientation = maxOrient
+        self.orientation = self.limitAngleToRange(maxOrient)
+        
+    def limitAngleToRange(self, angle):
+        while(angle < math.pi):
+            angle += 2*math.pi
+        while(angle > math.pi):
+            angle -= 2*math.pi
+        return angle
             
 
 class ImageAnalyzer:
