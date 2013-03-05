@@ -216,7 +216,7 @@ class TrackerInWindowMode:
         xm = xm + self.subImagePosition[0]
         ym = ym + self.subImagePosition[1]
         #print((xm, ym))
-        return [xm, ym]
+        return [xm, ym, orientation]
         
     def showCroppedImage(self):
         pass
@@ -254,6 +254,7 @@ class CameraDriver:
             self.windowedTrackers.append(TrackerInWindowMode(markerOrder))
             self.oldLocations.append(None)
         self.cnt = 0
+        self.defaultOrientation = 0
 
     
     def getImage(self):
@@ -268,7 +269,7 @@ class CameraDriver:
                 self.processedFrame = self.trackers[k].analyzeImage(self.currentFrame)
                 markerX = self.trackers[k].markerLocationsX[0]
                 markerY = self.trackers[k].markerLocationsY[0]
-                self.oldLocations[k] = [markerX, markerY]
+                self.oldLocations[k] = [markerX, markerY, self.defaultOrientation]
             else:
                 # Search for marker around the old location.
                 self.windowedTrackers[k].cropFrame(self.currentFrame, self.oldLocations[k][0], self.oldLocations[k][1])
@@ -365,6 +366,11 @@ def main():
         else:
             pass
             #print y
+            try:
+                print("%3d %3d %8.3f" % (y[0][0], y[0][1], y[0][2]))
+            except:
+                pass
+                
             
     print("Stopping")
 
