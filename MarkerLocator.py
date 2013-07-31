@@ -87,13 +87,15 @@ class MarkerTracker:
             orient = self.orientation + 2 * k * math.pi / self.order
             xm2 = int(xm + 30*math.cos(orient))
             ym2 = int(ym + 30*math.sin(orient))
-            try:
-                intensity = cv.Get2D(frame, ym2, xm2)
-                if(intensity[0] > maxValue):
-                    maxValue = intensity[0]
-                    maxOrient = orient
-            except:
-                pass
+            if(xm2 > 0 and ym2 > 0 and xm2 < frame.width and ym2 < frame.height):
+                try:
+                    intensity = cv.Get2D(frame, ym2, xm2)
+                    if(intensity[0] > maxValue):
+                        maxValue = intensity[0]
+                        maxOrient = orient
+                except:
+                    print("determineMarkerOrientation: error: %d %d %d %d" % (ym2, xm2, frame.width, frame.height))
+                    pass
 
         self.orientation = self.limitAngleToRange(maxOrient)
         
