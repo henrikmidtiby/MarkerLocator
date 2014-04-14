@@ -208,11 +208,14 @@ class TrackerInWindowMode:
         #cv.Line(self.reducedImage, (0, ym), (self.originalImage.width, ym), (0, 0, 255)) # B, G, R
         #cv.Line(self.reducedImage, (xm, 0), (xm, self.originalImage.height), (0, 0, 255))
 
+        redColor = (55, 55, 255)
+        blueColor = (255, 0, 0)
+
         orientation = self.markerTracker.orientation
-        cv.Circle(self.reducedImage, (xm, ym), 4, (55, 55, 255), 2)
+        cv.Circle(self.reducedImage, (xm, ym), 4, redColor, 2)
         xm2 = int(xm + 50*math.cos(orientation))
         ym2 = int(ym + 50*math.sin(orientation))
-        cv.Line(self.reducedImage, (xm, ym), (xm2, ym2), (255, 0, 0), 2)
+        cv.Line(self.reducedImage, (xm, ym), (xm2, ym2), blueColor, 2)
 
         
         xm = xm + self.subImagePosition[0]
