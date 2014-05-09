@@ -298,7 +298,7 @@ class CameraDriver:
 
         self.setFocus()
         # Select the camera where the images should be grabbed from.
-        self.camera = cv.CaptureFromCAM(0)
+        self.camera = cv.CaptureFromCAM(1)
         self.setResolution()
 
         # Storage for image processing.
