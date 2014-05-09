@@ -12,7 +12,7 @@ Provided for free but use at your own risk.
 
 2013-02-13 
 Structural changes allows simultaneous tracking of several markers.
-Frederik Hagel added code to publish marker locations to ROS.
+Frederik Hagelskjaer added code to publish marker locations to ROS.
 '''
 
 PublishToROS = False
