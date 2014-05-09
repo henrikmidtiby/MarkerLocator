@@ -295,6 +295,8 @@ class CameraDriver:
         # Initialize camera driver.
         # Open output window.
         cv.NamedWindow('filterdemo', cv.CV_WINDOW_AUTOSIZE)
+
+        self.setFocus()
         # Select the camera where the images should be grabbed from.
         self.camera = cv.CaptureFromCAM(0)
         # Storage for image processing.
@@ -315,6 +317,14 @@ class CameraDriver:
         self.cnt = 0
         self.defaultOrientation = 0
 
+    def setFocus(self):
+        # Disable autofocus
+        os.system('v4l2-ctl -d 1 -c focus_auto=0')
+        
+        # Set focus to a specific value. High values for nearby objects and
+        # low values for distant objects.
+        os.system('v4l2-ctl -d 1 -c focus_absolute=0')
+        
     
     def getImage(self):
         # Get image from camera.
