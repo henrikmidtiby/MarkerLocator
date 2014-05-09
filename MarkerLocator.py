@@ -1,16 +1,13 @@
 #!/usr/bin/env python
 from time import time
 import sys
-import numpy as np
-import math
 import os
 
 sys.path.append('/opt/ros/hydro/lib/python2.7/dist-packages')
 import cv
 
-from MarkerTracker import *
-from ImageAnalyzer import *
-from TrackerInWindowMode import *
+from ImageAnalyzer import ImageAnalyzer
+from TrackerInWindowMode import TrackerInWindowMode
 
 '''
 2012-10-10
