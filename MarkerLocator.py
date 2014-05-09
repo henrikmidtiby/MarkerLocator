@@ -426,7 +426,7 @@ def main():
     if PublishToROS:  
         RP = RosPublisher(toFind)
        
-    cd = CameraDriver(toFind)
+    cd = CameraDriver(toFind, defaultKernelSize = 31)
     t0 = time()
      
     while cd.running:
