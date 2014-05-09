@@ -299,6 +299,8 @@ class CameraDriver:
         self.setFocus()
         # Select the camera where the images should be grabbed from.
         self.camera = cv.CaptureFromCAM(0)
+        self.setResolution()
+
         # Storage for image processing.
         self.currentFrame = None
         self.processedFrame = None
@@ -326,6 +328,12 @@ class CameraDriver:
         os.system('v4l2-ctl -d 1 -c focus_absolute=0')
         
     
+    def setResolution(self):
+        cv.SetCaptureProperty(self.camera, cv.CV_CAP_PROP_FRAME_WIDTH, 1920)
+        cv.SetCaptureProperty(self.camera, cv.CV_CAP_PROP_FRAME_HEIGHT, 1080)
+        #cv.SetCaptureProperty(self.camera, cv.CV_CAP_PROP_FRAME_WIDTH, 2304)
+        #cv.SetCaptureProperty(self.camera, cv.CV_CAP_PROP_FRAME_HEIGHT, 1536)
+
     def getImage(self):
         # Get image from camera.
         self.currentFrame = cv.QueryFrame(self.camera)
