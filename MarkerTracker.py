@@ -14,6 +14,7 @@ class MarkerTracker:
     Purpose: Locate a certain marker in an image.
     '''
     def __init__(self, order, kernelSize, scaleFactor):
+        self.kernelSize = kernelSize
         (kernelReal, kernelImag) = self.generateSymmetryDetectorKernel(order, kernelSize)
         self.order = order
         self.matReal = cv.CreateMat(kernelSize, kernelSize, cv.CV_32FC1)
@@ -88,7 +89,7 @@ class MarkerTracker:
 
         maxValue = 0
         maxOrient = 0
-        searchDist = 10
+        searchDist = self.kernelSize / 3
         for k in range(self.order):
             orient = self.orientation + 2 * k * math.pi / self.order
             xm2 = int(xm + searchDist*math.cos(orient))
