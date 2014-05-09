@@ -216,13 +216,13 @@ class ImageAnalyzer:
         return frame
 
 class TrackerInWindowMode:
-    def __init__(self, order = 7):
+    def __init__(self, order = 7, defaultKernelSize = 21):
         #cv.NamedWindow('reducedWindow', cv.CV_WINDOW_AUTOSIZE)
         self.windowWidth = 100
         self.windowHeight = 100
         self.frameGray = cv.CreateImage ((self.windowWidth, self.windowHeight), cv.IPL_DEPTH_32F, 1)
         self.originalImage = cv.CreateImage((self.windowWidth, self.windowHeight), cv.IPL_DEPTH_32F, 3)
-        self.markerTracker = MarkerTracker(order, 21, 2500)
+        self.markerTracker = MarkerTracker(order, defaultKernelSize, 2500)
         self.trackerIsInitialized = False
         self.subImagePosition = None
         pass
