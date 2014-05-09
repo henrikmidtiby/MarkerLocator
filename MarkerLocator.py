@@ -69,6 +69,10 @@ class CameraDriver:
         # Set focus to a specific value. High values for nearby objects and
         # low values for distant objects.
         os.system('v4l2-ctl -d 1 -c focus_absolute=0')
+
+        # sharpness (int)    : min=0 max=255 step=1 default=128 value=128
+        os.system('v4l2-ctl -d 1 -c sharpness=200')
+
         
     
     def setResolution(self):
