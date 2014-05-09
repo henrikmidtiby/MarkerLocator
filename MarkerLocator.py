@@ -1,5 +1,5 @@
 #!/usr/bin/env python
-from time import time
+from time import time, strftime
 import sys
 import os
 
@@ -128,8 +128,8 @@ class CameraDriver:
         if key == 115: # S
             # save image
             print("Saving image")
-            cv.SaveImage("output/filename%03d.png" % self.cnt, self.currentFrame)
-            self.cnt = self.cnt + 1
+            filename = strftime("%Y-%m-%d %H-%M-%S")
+            cv.SaveImage("output/%s.png" % filename, self.currentFrame)
 
     def returnPositions(self):
         # Return list of all marker locations.
