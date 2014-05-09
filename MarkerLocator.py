@@ -141,7 +141,17 @@ class MarkerTracker:
         # angdifference \in [-0.2; 0.2]
         # strengthRatio \in [0.03; 0.055]
         quality = math.exp(-math.pow(difference/0.3, 2))
-        print("quality: %5.2f" % quality)
+        self.printMarkerQuality(quality)
+        
+    def printMarkerQuality(self, quality):
+        stars = ""        
+        if(quality > 0.5):
+            stars = "**"
+        if(quality > 0.7):
+            stars = "***"
+        if(quality > 0.9):
+            stars = "****"
+        print("quality: %5.2f %s" % (quality, stars))
         
     def limitAngleToRange(self, angle):
         while(angle < math.pi):
