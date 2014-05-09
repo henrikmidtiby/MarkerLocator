@@ -2,8 +2,12 @@
 from time import time
 import sys
 import numpy as np
-import cv2.cv as cv
 import math
+import os
+
+sys.path.append('/opt/ros/hydro/lib/python2.7/dist-packages')
+import cv
+
 
 '''
 2012-10-10
