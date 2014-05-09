@@ -314,7 +314,7 @@ class CameraDriver:
             temp = ImageAnalyzer(1)
             temp.addMarkerToTrack(markerOrder, defaultKernelSize, scalingParameter)
             self.trackers.append(temp)
-            self.windowedTrackers.append(TrackerInWindowMode(markerOrder))
+            self.windowedTrackers.append(TrackerInWindowMode(markerOrder, defaultKernelSize))
             self.oldLocations.append(None)
         self.cnt = 0
         self.defaultOrientation = 0
