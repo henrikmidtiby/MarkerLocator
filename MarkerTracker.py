@@ -34,6 +34,7 @@ class MarkerTracker:
                 self.matRealThirdHarmonics[i, j] = kernelRealThirdHarmonics[i][j] / scaleFactor
                 self.matImagThirdHarmonics[i, j] = kernelImagThirdHarmonics[i][j] / scaleFactor
 
+        self.quality = 0
                   
     def generateSymmetryDetectorKernel(self, order, kernelsize):
         valueRange = np.linspace(-1, 1, kernelsize);
@@ -123,8 +124,8 @@ class MarkerTracker:
         #print("angdifferenge: %5.2f  strengthRatio: %8.5f" % (difference, strengthThirdHarmonics / strength))
         # angdifference \in [-0.2; 0.2]
         # strengthRatio \in [0.03; 0.055]
-        quality = math.exp(-math.pow(difference/0.3, 2))
-        self.printMarkerQuality(quality)
+        self.quality = math.exp(-math.pow(difference/0.3, 2))
+        #self.printMarkerQuality(self.quality)
         
     def printMarkerQuality(self, quality):
         stars = ""        
@@ -134,7 +135,7 @@ class MarkerTracker:
             stars = "***"
         if(quality > 0.9):
             stars = "****"
-        print("quality: %5.2f %s" % (quality, stars))
+        print("quality = %d): %5.2f %s" % (self.order, quality, stars))
         
     def limitAngleToRange(self, angle):
         while(angle < math.pi):

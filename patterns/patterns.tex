@@ -124,6 +124,70 @@
 \end{tikzpicture}
 
 
+
+
+\newpage
+\renewcommand{\archlength}{4cm}
+\begin{tikzpicture}
+\newcommand\order{6}
+		\begin{scope}
+			% Do calculation
+			\pgfmathsetmacro{\steplength}{180 / \order}%
+			\foreach \n in {0, \steplength, ..., 149}{\drawarch{\n}}
+		\end{scope}
+\renewcommand\order{7}
+		\begin{scope}[xshift=9cm]
+			% Do calculation
+			\pgfmathsetmacro{\steplength}{180 / \order}%
+			\foreach \n in {0, \steplength, ..., 149}{\drawarch{\n}}
+		\end{scope}
+\renewcommand\order{8}
+		\begin{scope}[yshift=9cm]
+			% Do calculation
+			\pgfmathsetmacro{\steplength}{180 / \order}%
+			\foreach \n in {0, \steplength, ..., 149}{\drawarch{\n}}
+		\end{scope}
+\renewcommand\order{9}
+		\begin{scope}[xshift=9cm, yshift=9cm]
+			% Do calculation
+			\pgfmathsetmacro{\steplength}{180 / \order}%
+			\foreach \n in {0, \steplength, ..., 149}{\drawarch{\n}}
+		\end{scope}
+\end{tikzpicture}
+
+
+
+\newpage
+\renewcommand{\archlength}{4cm}
+\begin{tikzpicture}
+\newcommand\order{4}
+		\begin{scope}
+			% Do calculation
+			\pgfmathsetmacro{\steplength}{180 / \order}%
+			\foreach \n in {0, \steplength, ..., 119}{\drawarch{\n}}
+		\end{scope}
+\renewcommand\order{5}
+		\begin{scope}[xshift=9cm]
+			% Do calculation
+			\pgfmathsetmacro{\steplength}{180 / \order}%
+			\foreach \n in {0, \steplength, ..., 119}{\drawarch{\n}}
+		\end{scope}
+\renewcommand\order{6}
+		\begin{scope}[yshift=9cm]
+			% Do calculation
+			\pgfmathsetmacro{\steplength}{180 / \order}%
+			\foreach \n in {0, \steplength, ..., 129}{\drawarch{\n}}
+		\end{scope}
+\renewcommand\order{7}
+		\begin{scope}[xshift=9cm, yshift=9cm]
+			% Do calculation
+			\pgfmathsetmacro{\steplength}{180 / \order}%
+			\foreach \n in {0, \steplength, ..., 139}{\drawarch{\n}}
+		\end{scope}
+\end{tikzpicture}
+
+
+
 \newpage
 \begin{tikzpicture}[scale=2]
 \fill (0, 0) rectangle ++(1, 1);

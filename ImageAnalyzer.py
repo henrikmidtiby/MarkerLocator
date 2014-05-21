@@ -7,7 +7,7 @@ Image analyzer class for talking with the MarkerTracker.
 
 import cv
 
-from MarkerTracker import *
+from MarkerTracker import MarkerTracker
 
 class ImageAnalyzer:
     '''

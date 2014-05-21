@@ -5,7 +5,9 @@ Window mode marker tracker.
 @author: Henrik Skov Midtiby
 """
 import cv
-from MarkerTracker import *
+from MarkerTracker import MarkerTracker
+import math
+from MarkerPose import MarkerPose
 
 class TrackerInWindowMode:
     def __init__(self, order = 7, defaultKernelSize = 21):
@@ -67,7 +69,9 @@ class TrackerInWindowMode:
         xm = xm + self.subImagePosition[0]
         ym = ym + self.subImagePosition[1]
         #print((xm, ym))
-        return [xm, ym, orientation]
+        
+        #return [xm, ym, orientation, self.markerTracker.quality]
+        return MarkerPose(xm, ym, orientation, self.markerTracker.quality, self.markerTracker.order)        
         
     def showCroppedImage(self):
         pass
