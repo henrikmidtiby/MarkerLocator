@@ -25,7 +25,6 @@ Frederik Hagelskjaer added code to publish marker locations to ROS.
 PublishToROS = False
 
 if PublishToROS:
-    import roslib; roslib.load_manifest('frobitLocator')
     import rospy
     from geometry_msgs.msg import Point
             
@@ -259,15 +258,15 @@ class RosPublisher:
         self.pub = []
         self.markers = markers
         for i in markers:
-            self.pup.append( rospy.Publisher('positionPuplisher' + str(i), Point)  )       
-        rospy.init_node('FrobitLocator')   
+            self.pub.append( rospy.Publisher('positionPuplisher' + str(i), Point, queue_size = 10)  )
+        rospy.init_node('FrobitLocator')
 
     def publishMarkerLocations(self, locations):
-        j = 0        
+        j = 0
         for i in self.markers:
-            print 'x%i %i  y%i %i  o%i %i' %(i, locations[j][0], i, locations[j][1], i, locations[j][2])
+	    print 'x%i %i  y%i %i  o%i %i' %(i, locations[j].x, i, locations[j].y, i, locations[j].theta)
             #ros function        
-            self.pup[j].publish(  Point( locations[j][0], locations[j][1], locations[j][2] )  )
+            self.pub[j].publish(  Point( locations[j].x, locations[j].y, locations[j].theta )  )
             j = j + 1                
         
 
