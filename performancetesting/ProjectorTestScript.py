@@ -4,7 +4,7 @@ Created on Thu Aug 14 13:36:47 2014
 
 @author: henrik
 """
-
+    
 import sys
 
 sys.path.append('/opt/ros/hydro/lib/python2.7/dist-packages')
@@ -32,21 +32,22 @@ def drawMarker(canvas, offset, orientation, order, radius):
     return canvas
     
 def main():
-    canvas = np.ones((600, 600))
-    
-    order = 7
-    offset = np.array([200, 300])
+    order = 3
     radius = 100
-    orientation = 0.3
+    
+    xoffset = np.linspace(100, 500, 200)
+    yoffset = np.linspace(400, 300, 200)
+    orientation = np.linspace(0, 2*math.pi, 200)
 
-    while True:
-        for orient in np.linspace(0, 2*math.pi, 110, endpoint=False):
-            canvas = np.ones((600, 600))
-            canvas = drawMarker(canvas, offset, orient, order, radius)
-            cv2.imshow('frame', canvas)
-            key = cv2.waitKey(100)
-            if (key & 0xFF) == ord('q'):
-                return
+    for k in range(xoffset.size):
+        offset = [xoffset[k], yoffset[k]]
+        orient = orientation[k]
+        canvas = np.ones((600, 600))
+        canvas = drawMarker(canvas, offset, orient, order, radius)
+        cv2.imshow('frame', canvas)
+        key = cv2.waitKey(50)
+        if (key & 0xFF) == ord('q'):
+            return
 
     cv2.waitKey(0)
     pass
