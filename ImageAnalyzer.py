@@ -5,7 +5,8 @@ Image analyzer class for talking with the MarkerTracker.
 @author: Henrik Skov Midtiby
 """
 
-import cv
+import cv2
+import numpy as np
 
 from MarkerTracker import MarkerTracker
 
@@ -32,25 +33,30 @@ class ImageAnalyzer:
     # Is called with a colour image.
     def initializeSubClasses(self, frame):
         self.subClassesInitialized = True
-        reducedWidth = frame.width / self.downscaleFactor
-        reducedHeight = frame.height / self.downscaleFactor
-        reducedDimensions = (reducedWidth, reducedHeight)
-        self.frameGray = cv.CreateImage (reducedDimensions, cv.IPL_DEPTH_32F, 1)
-        self.originalImage = cv.CreateImage(reducedDimensions, cv.IPL_DEPTH_32F, 3)
-        self.reducedImage = cv.CreateImage(reducedDimensions, frame.depth, frame.nChannels)
+        reducedWidth = frame.shape[1] / self.downscaleFactor
+        reducedHeight = frame.shape[0] / self.downscaleFactor
+        reducedDimensions = (reducedHeight, reducedWidth)
+        self.frameGray = np.zeros (reducedDimensions+(1,), dtype=np.float32)
+        self.frameGray = np.zeros (reducedDimensions+(1,), dtype=np.float32)
+        
+        self.originalImage = np.zeros (reducedDimensions+(3,), dtype=np.float32)
+        self.reducedImage = np.zeros (reducedDimensions+(frame.shape[2],), dtype=np.float32)
         for k in range(len(self.markerTrackers)):
             self.markerTrackers[k].allocateSpaceGivenFirstFrame(self.reducedImage)
     
     # Is called with a colour image.
     def analyzeImage(self, frame):
-        assert(frame.nChannels == 3)
+        assert(frame.shape[2] == 3)
         if(self.subClassesInitialized is False):
             self.initializeSubClasses(frame)
 
-        cv.Resize(frame, self.reducedImage)
+        #cv.Resize(frame, self.reducedImage)
+        self.reducedImage = cv2.resize(frame,(0,0), fx=1.0/self.downscaleFactor, fy=1.0/self.downscaleFactor)
 
-        cv.ConvertScale(self.reducedImage, self.originalImage)
-        cv.CvtColor(self.originalImage, self.frameGray, cv.CV_RGB2GRAY)
+        self.originalImage=self.reducedImage
+        #cv.ConvertScale(self.reducedImage, self.originalImage)
+        #cv.CvtColor(self.originalImage, self.frameGray, cv.CV_RGB2GRAY)
+        self.frameGray=cv2.cvtColor(self.originalImage,cv2.cv.CV_RGB2GRAY)
 
         for k in range(len(self.markerTrackers)):
             markerLocation = self.markerTrackers[k].locateMarker(self.frameGray)
