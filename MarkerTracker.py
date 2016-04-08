@@ -90,8 +90,6 @@ class MarkerTracker:
 
     def determineMarkerOrientation(self, frame):    
         (xm, ym) = self.lastMarkerLocation
-        #realval = cv.Get2D(self.frameReal, ym, xm)[0]
-        #imagval = cv.Get2D(self.frameImag, ym, xm)[0]
         realval=self.frameReal[ym, xm]
         imagval = self.frameImag[ym, xm]
         
@@ -118,9 +116,6 @@ class MarkerTracker:
 
     def determineMarkerQuality(self):
         (xm, ym) = self.lastMarkerLocation
-#        realval = cv.Get2D(self.frameReal, ym, xm)[0]
-#        imagval = cv.Get2D(self.frameImag, ym, xm)[0]
-
         realval=self.frameReal[ym, xm]
         imagval = self.frameImag[ym, xm]        
 
