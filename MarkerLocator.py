@@ -382,8 +382,6 @@ def main():
         if PublishToROS:
             RP.publishMarkerLocations(y)
         else:
-            pass
-            #print y
             for k in range(len(y)):
                 try:
                     poseCorrected = perspectiveConverter.convertPose(y[k])
