@@ -50,12 +50,10 @@ class ImageAnalyzer:
         if(self.subClassesInitialized is False):
             self.initializeSubClasses(frame)
 
-        #cv.Resize(frame, self.reducedImage)
         self.reducedImage = cv2.resize(frame,(0,0), fx=1.0/self.downscaleFactor, fy=1.0/self.downscaleFactor)
 
         self.originalImage=self.reducedImage
         #cv.ConvertScale(self.reducedImage, self.originalImage)
-        #cv.CvtColor(self.originalImage, self.frameGray, cv.CV_RGB2GRAY)
         self.frameGray=cv2.cvtColor(self.originalImage,cv2.cv.CV_RGB2GRAY)
 
         for k in range(len(self.markerTrackers)):
