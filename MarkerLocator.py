@@ -267,6 +267,7 @@ class ImageDriver:
         # Storage for image processing.
         self.currentFrame = None
         self.processedFrame = None
+        self.running = True
         # Storage for trackers.
         self.trackers = []
         self.oldLocations = []
@@ -306,7 +307,7 @@ class ImageDriver:
             orientation = self.trackers[k].markerTrackers[0].orientation
             quality = self.trackers[k].markerTrackers[0].quality
             self.oldLocations[k] = MarkerPose(markerX, markerY, orientation, quality)
-            
+            self.running=False
             
     def showProcessedFrame(self):
         cv2.imshow('filterdemo', self.processedFrame)
@@ -318,6 +319,8 @@ class ImageDriver:
         return self.oldLocations
 
     def resetAllLocations(self):
+        pass
+    def handleKeyboardEvents(self):
         pass
 
 
@@ -355,29 +358,11 @@ def main():
 
     if PublishToROS:  
         RP = RosPublisher(toFind)
+              
        
        
-       
-       
-       
-       
-    cd=ImageDriver(toFind, defaultKernelSize = 21)
-    cd.getImage()
-    cd.processFrame()
-    cd.drawDetectedMarkers()
-    cd.showProcessedFrame()
-    y = cd.returnPositions()
-       
-       
-       
-       
-       
-       
-       
-       
-       
-    #cd = CameraDriver(toFind, defaultKernelSize = 25) # Best in robolab.
-    cd = ImageDriver(toFind, defaultKernelSize = 21)
+    cd = CameraDriver(toFind, defaultKernelSize = 25) # Best in robolab.
+    #cd = ImageDriver(toFind, defaultKernelSize = 21)
     t0 = time()
      
      
