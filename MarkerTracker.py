@@ -4,7 +4,7 @@ Marker tracker for locating n-fold edges in images using convolution.
 
 @author: Henrik Skov Midtiby
 """
-import cv
+import cv2
 import numpy as np
 import math
 
@@ -17,8 +17,8 @@ class MarkerTracker:
         self.kernelSize = kernelSize
         (kernelReal, kernelImag) = self.generateSymmetryDetectorKernel(order, kernelSize)
         self.order = order
-        self.matReal = cv.CreateMat(kernelSize, kernelSize, cv.CV_32FC1)
-        self.matImag = cv.CreateMat(kernelSize, kernelSize, cv.CV_32FC1)
+        self.matReal = np.zeros((kernelSize, kernelSize), dtype=np.float32)
+        self.matImag = np.zeros((kernelSize, kernelSize), dtype=np.float32)
         for i in range(kernelSize):
             for j in range(kernelSize):
                 self.matReal[i, j] = kernelReal[i][j] / scaleFactor
@@ -27,8 +27,8 @@ class MarkerTracker:
         self.orientation = None
 
         (kernelRealThirdHarmonics, kernelImagThirdHarmonics) = self.generateSymmetryDetectorKernel(3*order, kernelSize)
-        self.matRealThirdHarmonics = cv.CreateMat(kernelSize, kernelSize, cv.CV_32FC1)
-        self.matImagThirdHarmonics = cv.CreateMat(kernelSize, kernelSize, cv.CV_32FC1)
+        self.matRealThirdHarmonics = np.zeros((kernelSize, kernelSize), np.float32)
+        self.matImagThirdHarmonics = np.zeros((kernelSize, kernelSize), np.float32)
         for i in range(kernelSize):
             for j in range(kernelSize):
                 self.matRealThirdHarmonics[i, j] = kernelRealThirdHarmonics[i][j] / scaleFactor
@@ -40,7 +40,7 @@ class MarkerTracker:
         valueRange = np.linspace(-1, 1, kernelsize);
         temp1 = np.meshgrid(valueRange, valueRange)
         kernel = temp1[0] + 1j*temp1[1];
-            
+
         magni = abs(kernel);
         kernel = kernel**order;
         kernel = kernel*np.exp(-8*magni**2);
@@ -48,34 +48,40 @@ class MarkerTracker:
         return (np.real(kernel), np.imag(kernel))
 
     def allocateSpaceGivenFirstFrame(self, frame):
-        self.newFrameImage32F = cv.CreateImage((frame.width, frame.height), cv.IPL_DEPTH_32F, 3)
-        self.frameReal = cv.CreateImage ((frame.width, frame.height), cv.IPL_DEPTH_32F, 1)
-        self.frameImag = cv.CreateImage ((frame.width, frame.height), cv.IPL_DEPTH_32F, 1)
-        self.frameRealThirdHarmonics = cv.CreateImage ((frame.width, frame.height), cv.IPL_DEPTH_32F, 1)
-        self.frameImagThirdHarmonics = cv.CreateImage ((frame.width, frame.height), cv.IPL_DEPTH_32F, 1)
-        self.frameRealSq = cv.CreateImage ((frame.width, frame.height), cv.IPL_DEPTH_32F, 1)
-        self.frameImagSq = cv.CreateImage ((frame.width, frame.height), cv.IPL_DEPTH_32F, 1)
-        self.frameSumSq = cv.CreateImage ((frame.width, frame.height), cv.IPL_DEPTH_32F, 1)
+        framewidth=frame.shape[1]
+        frameheight=frame.shape[0]
+        self.newFrameImage32F = np.zeros((frameheight, framewidth,3), dtype=np.float32)
+        self.newFrameImage32F = np.zeros((frameheight, framewidth,3), dtype=np.float32)
+        self.frameReal = np.zeros((frameheight,framewidth,1), dtype=np.float32)
+        self.frameImag = np.zeros((frameheight,framewidth,1), dtype=np.float32)
+        self.frameRealThirdHarmonics = np.zeros((frameheight,framewidth,1), dtype=np.float32)
+        self.frameImagThirdHarmonics = np.zeros((frameheight,framewidth,1), dtype=np.float32)
+        self.frameRealSq = np.zeros((frameheight,framewidth,1), dtype=np.float32)
+        self.frameImagSq = np.zeros((frameheight,framewidth,1), dtype=np.float32)
+        self.frameSumSq = np.zeros((frameheight,framewidth,1), dtype=np.float32)
 
-    
+
     def locateMarker(self, frame):
-        self.frameReal = cv.CloneImage(frame)
-        self.frameImag = cv.CloneImage(frame)
-        self.frameRealThirdHarmonics = cv.CloneImage(frame)
-        self.frameImagThirdHarmonics = cv.CloneImage(frame)
+        self.frameReal = frame
+        self.frameImag = frame
+        self.frameRealThirdHarmonics = frame
+        self.frameImagThirdHarmonics = frame
 
         # Calculate convolution and determine response strength.
-        cv.Filter2D(self.frameReal, self.frameReal, self.matReal)
-        cv.Filter2D(self.frameImag, self.frameImag, self.matImag)
-        cv.Mul(self.frameReal, self.frameReal, self.frameRealSq)
-        cv.Mul(self.frameImag, self.frameImag, self.frameImagSq)
-        cv.Add(self.frameRealSq, self.frameImagSq, self.frameSumSq)
+        self.frameReal = cv2.filter2D(self.frameReal, cv2.CV_32F, self.matReal)
+        self.frameImag = cv2.filter2D(self.frameImag, cv2.CV_32F, self.matImag)
+        
+        
+        
+        self.frameRealSq = np.multiply(self.frameReal, self.frameReal)
+        self.frameImagSq = np.multiply(self.frameImag, self.frameImag)
+        self.frameSumSq = self.frameRealSq + self.frameImagSq
 
         # Calculate convolution of third harmonics for quality estimation.
-        cv.Filter2D(self.frameRealThirdHarmonics, self.frameRealThirdHarmonics, self.matRealThirdHarmonics)
-        cv.Filter2D(self.frameImagThirdHarmonics, self.frameImagThirdHarmonics, self.matImagThirdHarmonics)
+        self.frameRealThirdHarmonics = cv2.filter2D(self.frameRealThirdHarmonics, cv2.CV_32F, self.matRealThirdHarmonics)
+        self.frameImagThirdHarmonics = cv2.filter2D(self.frameImagThirdHarmonics, cv2.CV_32F, self.matImagThirdHarmonics)
         
-        min_val, max_val, min_loc, max_loc = cv.MinMaxLoc(self.frameSumSq)
+        min_val, max_val, min_loc, max_loc = cv2.minMaxLoc(self.frameSumSq)
         self.lastMarkerLocation = max_loc
         (xm, ym) = max_loc
         self.determineMarkerOrientation(frame)
@@ -84,8 +90,9 @@ class MarkerTracker:
 
     def determineMarkerOrientation(self, frame):    
         (xm, ym) = self.lastMarkerLocation
-        realval = cv.Get2D(self.frameReal, ym, xm)[0]
-        imagval = cv.Get2D(self.frameImag, ym, xm)[0]
+        realval=self.frameReal[ym, xm]
+        imagval = self.frameImag[ym, xm]
+        
         self.orientation = (math.atan2(-realval, imagval) - math.pi / 2) / self.order
 
         maxValue = 0
@@ -95,24 +102,28 @@ class MarkerTracker:
             orient = self.orientation + 2 * k * math.pi / self.order
             xm2 = int(xm + searchDist*math.cos(orient))
             ym2 = int(ym + searchDist*math.sin(orient))
-            if(xm2 > 0 and ym2 > 0 and xm2 < frame.width and ym2 < frame.height):
+            if(xm2 > 0 and ym2 > 0 and xm2 < frame.shape[1] and ym2 < frame.shape[0]):
                 try:
-                    intensity = cv.Get2D(frame, ym2, xm2)
+                    intensity = frame[ym2,xm2]
                     if(intensity[0] > maxValue):
                         maxValue = intensity[0]
                         maxOrient = orient
                 except:
-                    print("determineMarkerOrientation: error: %d %d %d %d" % (ym2, xm2, frame.width, frame.height))
+                    print("determineMarkerOrientation: error: %d %d %d %d" % (ym2, xm2, frame.shape[1], frame.shape[0]))
                     pass
 
         self.orientation = self.limitAngleToRange(maxOrient)
 
     def determineMarkerQuality(self):
         (xm, ym) = self.lastMarkerLocation
-        realval = cv.Get2D(self.frameReal, ym, xm)[0]
-        imagval = cv.Get2D(self.frameImag, ym, xm)[0]
-        realvalThirdHarmonics = cv.Get2D(self.frameRealThirdHarmonics, ym, xm)[0]
-        imagvalThirdHarmonics = cv.Get2D(self.frameImagThirdHarmonics, ym, xm)[0]
+        realval=self.frameReal[ym, xm]
+        imagval = self.frameImag[ym, xm]        
+
+        realvalThirdHarmonics = self.frameRealThirdHarmonics[ym, xm]
+        imagvalThirdHarmonics = self.frameImagThirdHarmonics[ym, xm]
+        
+        
+        
         argumentPredicted = 3*math.atan2(-realval, imagval)
         argumentThirdHarmonics = math.atan2(-realvalThirdHarmonics, imagvalThirdHarmonics)
         argumentPredicted = self.limitAngleToRange(argumentPredicted)
