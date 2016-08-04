@@ -22,6 +22,7 @@ class ImageAnalyzer:
         self.subClassesInitialized = False
         self.markerLocationsX = []
         self.markerLocationsY = []
+        self.quality = None
         pass
 
     def addMarkerToTrack(self, order, kernelSize, scaleFactor):
@@ -62,6 +63,7 @@ class ImageAnalyzer:
             (xm, ym) = (self.downscaleFactor * xm, self.downscaleFactor * ym)
             self.markerLocationsX[k] = xm
             self.markerLocationsY[k] = ym
+            self.quality = self.markerTrackers[k].quality
             #cv.Line(frame, (0, ym), (frame.width, ym), (0, 0, 255)) # B, G, R
             #cv.Line(frame, (xm, 0), (xm, frame.height), (0, 0, 255))
 

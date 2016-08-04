@@ -76,21 +76,16 @@ class CameraDriver:
         # sharpness (int)    : min=0 max=255 step=1 default=128 value=128
         os.system('v4l2-ctl -d 1 -c sharpness=200')
 
-        
-    
     def setResolution(self):
         self.camera.set(cv2.cv.CV_CAP_PROP_FRAME_WIDTH, 1920)
         self.camera.set(cv2.cv.CV_CAP_PROP_FRAME_HEIGHT, 1080)
-
-
 
     def getImage(self):
         # Get image from camera.
         self.currentFrame = self.camera.read()[1]
         print(self.currentFrame[1:5,1,1])
         pass
-        
-        
+
     def processFrame(self):
         # Locate all markers in image.
         for k in range(len(self.trackers)):
@@ -100,7 +95,8 @@ class CameraDriver:
                 markerX = self.trackers[k].markerLocationsX[0]
                 markerY = self.trackers[k].markerLocationsY[0]
                 order = self.trackers[k].markerTrackers[0].order
-                self.oldLocations[k] = MarkerPose(markerX, markerY, self.defaultOrientation, 0, order)
+                quality = self.trackers[k].markerTrackers[0].quality
+                self.oldLocations[k] = MarkerPose(markerX, markerY, self.defaultOrientation, quality, order)
             else:
                 # Search for marker around the old location.
                 self.processedFrame = self.currentFrame
@@ -118,18 +114,14 @@ class CameraDriver:
             xm2 = int(xm + 50*math.cos(orientation))
             ym2 = int(ym + 50*math.sin(orientation))
             cv2.line(self.processedFrame, (xm, ym), (xm2, ym2), (255, 0, 0), 2)
-
     
     def showProcessedFrame(self):
         cv2.imshow('filterdemo', self.processedFrame)
-        print(self.processedFrame[1:5,1,1])
-        pass
 
     def resetAllLocations(self):
         # Reset all markers locations, forcing a full search on the next iteration.
         for k in range(len(self.trackers)):
             self.oldLocations[k] = MarkerPose(None, None, None, None)
-
         
     def handleKeyboardEvents(self):
         # Listen for keyboard events and take relevant actions.
@@ -147,10 +139,10 @@ class CameraDriver:
             filename = strftime("%Y-%m-%d %H-%M-%S")
             cv2.imwrite("output/%s.png" % filename, self.currentFrame)
 
-
     def returnPositions(self):
         # Return list of all marker locations.
         return self.oldLocations
+
  
 class CameraDriverSimple:
     ''' 
@@ -373,8 +365,8 @@ def main():
     cd = CameraDriver(toFind, defaultKernelSize = 25) # Best in robolab.
     #cd = ImageDriver(toFind, defaultKernelSize = 21)
     t0 = time()
-     
-     
+
+    # Calibration of setup in robolab, so that the coordinates correspond to real world coordinates.
     pointLocationsInImage = [[1328, 340], [874, 346], [856, 756], [1300, 762]]
     realCoordinates = [[0, 0], [300, 0], [300, 250], [0, 250]]
     perspectiveConverter = PerspectiveCorrecter(pointLocationsInImage, realCoordinates)
@@ -398,8 +390,6 @@ def main():
                 except:
                     pass
                 
-            
     print("Stopping")
-
 
 main()
