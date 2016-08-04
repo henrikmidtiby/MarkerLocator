@@ -268,6 +268,8 @@ class ImageDriver:
         # Storage for image processing.
         self.currentFrame = None
         self.processedFrame = None
+        self.running = True
+
         # Storage for trackers.
         self.trackers = []
         self.oldLocations = []
@@ -285,7 +287,7 @@ class ImageDriver:
         
     def getImage(self):
         # Get image from camera.
-        self.currentFrame = cv2.imread('DSC_0283_crop.jpg')
+        self.currentFrame = cv2.imread('/home/henrik/Dropbox/Camera Uploads/2015-11-12 10.06.20.jpg')
         if not isinstance(self.currentFrame, (np.ndarray, np.generic)):
             raise TypeError('Your input type is not a numpy array')
 
@@ -318,6 +320,22 @@ class ImageDriver:
         cv2.imshow('filterdemo', self.processedFrame)
         cv2.waitKey(1)
         
+
+    def handleKeyboardEvents(self):
+        # Listen for keyboard events and take relevant actions.
+        key = cv2.waitKey(20)
+        # Discard higher order bit, http://permalink.gmane.org/gmane.comp.lib.opencv.devel/410
+        key = key & 0xff
+        if key == 27: # Esc
+            self.running = False
+        if key == 114: # R
+            print("Resetting")
+            self.resetAllLocations()
+        if key == 115: # S
+            # save image
+            print("Saving image")
+            filename = strftime("%Y-%m-%d %H-%M-%S")
+            cv2.imwrite("output/%s.png" % filename, self.currentFrame)
 
     def returnPositions(self):
         # Return list of all marker locations.
@@ -393,7 +411,7 @@ def main():
      
     while cd.running:
         (t1, t0) = (t0, time())
-        #print "time for one iteration: %f" % (t0 - t1)
+        print "time for one iteration: %f" % (t0 - t1)
         cd.getImage()
         cd.processFrame()
         cd.drawDetectedMarkers()
