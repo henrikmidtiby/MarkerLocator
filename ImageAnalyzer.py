@@ -25,7 +25,7 @@ class ImageAnalyzer:
         self.quality = None
         pass
 
-    def addMarkerToTrack(self, order, kernelSize, scaleFactor):
+    def add_marker_to_track(self, order, kernelSize, scaleFactor):
         self.markerTrackers.append(MarkerTracker(order, kernelSize, scaleFactor))
         self.markerLocationsX.append(0)
         self.markerLocationsY.append(0)

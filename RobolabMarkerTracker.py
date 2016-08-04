@@ -54,7 +54,7 @@ class CameraDriver:
         # Initialize trackers.
         for markerOrder in markerOrders:
             temp = ImageAnalyzer(downscaleFactor=1)
-            temp.addMarkerToTrack(markerOrder, defaultKernelSize, scalingParameter)
+            temp.add_marker_to_track(markerOrder, defaultKernelSize, scalingParameter)
             self.trackers.append(temp)
             self.oldLocations.append(MarkerPose(None, None, None, None))
 
