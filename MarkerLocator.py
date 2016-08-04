@@ -3,7 +3,10 @@ from time import time, strftime
 import sys
 import os
 
-sys.path.append('/opt/ros/hydro/lib/python2.7/dist-packages')
+# sys.path.append('/opt/ros/indigo/lib/python2.7/dist-packages')
+# need to run the following line before running the script in ros mode
+# source /opt/ros/indigo/setup.bash
+
 import cv2
 import math
 import numpy as np
@@ -21,6 +24,10 @@ Provided for free but use at your own risk.
 2013-02-13 
 Structural changes allows simultaneous tracking of several markers.
 Frederik Hagelskjaer added code to publish marker locations to ROS.
+
+2016-08-04 Henrik Skov Midtiby
+Adding an updated version of the marker tracker based on cv2.
+Code clean up.
 '''
 
 PublishToROS = False
