@@ -45,7 +45,7 @@ class ImageAnalyzer:
     # Is called with a colour image.
     def analyzeImage(self, frame):
         assert(frame.shape[2] == 3)
-        if(self.subClassesInitialized is False):
+        if self.subClassesInitialized is False:
             self.initializeSubClasses(frame)
 
         #cv.Resize(frame, self.reducedImage)

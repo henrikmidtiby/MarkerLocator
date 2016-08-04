@@ -94,7 +94,7 @@ class CameraDriver:
     def processFrame(self):
         # Locate all markers in image.
         for k in range(len(self.trackers)):
-            if(self.oldLocations[k].x is None):
+            if self.oldLocations[k].x is None:
                 # Previous marker location is unknown, search in the entire image.
                 self.processedFrame = self.trackers[k].analyzeImage(self.currentFrame)
                 markerX = self.trackers[k].markerLocationsX[0]
