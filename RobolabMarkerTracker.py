@@ -11,7 +11,7 @@ import sys
 import os
 
 sys.path.append('/opt/ros/hydro/lib/python2.7/dist-packages')
-import cv
+import cv2
 import math
 
 from ImageAnalyzer import ImageAnalyzer
@@ -36,12 +36,12 @@ class CameraDriver:
     def __init__(self, markerOrders = [7, 8], defaultKernelSize = 21, scalingParameter = 2500):
         # Initialize camera driver.
         # Open output window.
-        cv.NamedWindow('filterdemo', cv.CV_WINDOW_AUTOSIZE)
+        cv2.namedWindow('filterdemo', cv2.cv.CV_WINDOW_AUTOSIZE)
 
         self.setFocus()
         # Select the camera where the images should be grabbed from.
-        self.camera = cv.CaptureFromCAM(0)
-        #self.setResolution()
+        self.camera = cv2.VideoCapture(0)
+        self.setResolution()
 
         # Storage for image processing.
         self.currentFrame = None
@@ -71,18 +71,17 @@ class CameraDriver:
 
         # sharpness (int)    : min=0 max=255 step=1 default=128 value=128
         os.system('v4l2-ctl -d 1 -c sharpness=200')
-        
     
     def setResolution(self):
-        cv.SetCaptureProperty(self.camera, cv.CV_CAP_PROP_FRAME_WIDTH, 1920)
-        cv.SetCaptureProperty(self.camera, cv.CV_CAP_PROP_FRAME_HEIGHT, 1080)
-        #cv.SetCaptureProperty(self.camera, cv.CV_CAP_PROP_FRAME_WIDTH, 2304)
-        #cv.SetCaptureProperty(self.camera, cv.CV_CAP_PROP_FRAME_HEIGHT, 1536)
+        pass
+        #self.camera.set(cv2.cv.CV_CAP_PROP_FRAME_WIDTH, 1920)
+        #self.camera.set(cv2.cv.CV_CAP_PROP_FRAME_HEIGHT, 1080)
 
     def getImage(self):
         # Get image from camera.
-        self.currentFrame = cv.QueryFrame(self.camera)
-        
+        temp = self.camera.read()
+        self.currentFrame = temp[1]
+
     def processFrame(self):
         # Locate all markers in image.
         for k in range(len(self.trackers)):
@@ -96,17 +95,27 @@ class CameraDriver:
             self.oldLocations[k] = MarkerPose(markerX, markerY, orientation, quality, order)
     
     def drawDetectedMarkers(self):
-        for k in range(len(self.trackers)):
-            xm = self.oldLocations[k].x
-            ym = self.oldLocations[k].y
-            orientation = self.oldLocations[k].theta
-            cv.Circle(self.processedFrame, (xm, ym), 4, (55, 55, 255), 2)
-            xm2 = int(xm + 50*math.cos(orientation))
-            ym2 = int(ym + 50*math.sin(orientation))
-            cv.Line(self.processedFrame, (xm, ym), (xm2, ym2), (255, 0, 0), 2)
-    
+        try:
+            for k in range(len(self.trackers)):
+                xm = self.oldLocations[k].x
+                ym = self.oldLocations[k].y
+                orientation = self.oldLocations[k].theta
+                cv2.circle(self.processedFrame, (xm, ym), 4, (55, 55, 255), 2)
+
+                xm2 = int(xm + 50 * math.cos(orientation))
+                ym2 = int(ym + 50 * math.sin(orientation))
+                cv2.line(self.processedFrame, (xm, ym), (xm2, ym2), (255, 0, 0), 2)
+
+        except:
+            print("Something failed in drawDetectedMarkers")
+            pass
+
     def showProcessedFrame(self):
-        cv.ShowImage('filterdemo', self.processedFrame)
+        try:
+            cv2.imshow('filterdemo', self.processedFrame)
+        except:
+            print("Something failed in showProcessedFrame")
+            pass
         pass
 
     def resetAllLocations(self):
@@ -117,7 +126,7 @@ class CameraDriver:
         
     def handleKeyboardEvents(self):
         # Listen for keyboard events and take relevant actions.
-        key = cv.WaitKey(20) 
+        key = cv2.waitKey(100)
         # Discard higher order bit, http://permalink.gmane.org/gmane.comp.lib.opencv.devel/410
         key = key & 0xff
         if key == 27: # Esc
@@ -129,7 +138,7 @@ class CameraDriver:
             # save image
             print("Saving image")
             filename = strftime("%Y-%m-%d %H-%M-%S")
-            cv.SaveImage("output/%s.png" % filename, self.currentFrame)
+            cv2.imwrite("output/%s.png" % filename, self.currentFrame)
 
     def returnPositions(self):
         # Return list of all marker locations.
@@ -141,7 +150,7 @@ def main():
     t1 = time()
 
     toFind = [4, 5, 6, 7]
-    #toFind = [7] 
+    toFind = [4]
     # 4 Is not optimal, can be confused by 5
     # 5 works fine
       
