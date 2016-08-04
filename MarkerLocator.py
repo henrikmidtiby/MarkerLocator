@@ -6,6 +6,7 @@ import os
 sys.path.append('/opt/ros/hydro/lib/python2.7/dist-packages')
 import cv2
 import math
+import numpy as np
 
 from ImageAnalyzer import ImageAnalyzer
 from TrackerInWindowMode import TrackerInWindowMode
@@ -285,6 +286,9 @@ class ImageDriver:
     def getImage(self):
         # Get image from camera.
         self.currentFrame = cv2.imread('DSC_0283_crop.jpg')
+        if not isinstance(self.currentFrame, (np.ndarray, np.generic)):
+            raise TypeError('Your input type is not a numpy array')
+
 
     def drawDetectedMarkers(self):
         for k in range(len(self.trackers)):
@@ -300,6 +304,8 @@ class ImageDriver:
         # Locate all markers in image.
         for k in range(len(self.trackers)):
             # Previous marker location is unknown, search in the entire image.
+            if not isinstance(self.currentFrame, (np.ndarray, np.generic)):
+                raise TypeError('Your input type is not a numpy array')
             self.processedFrame = self.trackers[k].analyzeImage(self.currentFrame)
             markerX = self.trackers[k].markerLocationsX[0]
             markerY = self.trackers[k].markerLocationsY[0]
