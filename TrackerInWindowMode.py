@@ -11,37 +11,37 @@ from MarkerPose import MarkerPose
 import numpy as np
 import sys
 
+
 class TrackerInWindowMode:
     def __init__(self, order = 7, defaultKernelSize = 21):
-        self.windowWidth = 100
-        self.windowHeight = 100
-        self.frameGray = np.zeros((self.windowHeight, self.windowWidth,1), dtype=np.float32)
-        self.originalImage = np.zeros((self.windowHeight, self.windowWidth,3), dtype=np.float32)
+        self.window_width = 100
+        self.window_height = 100
+        self.frameGray = np.zeros((self.window_height, self.window_width, 1), dtype=np.float32)
+        self.originalImage = np.zeros((self.window_height, self.window_width, 3), dtype=np.float32)
         self.markerTracker = MarkerTracker(order, defaultKernelSize, 2500)
         self.trackerIsInitialized = False
         self.subImagePosition = None
         self.reducedImage = None
         pass
     
-    def cropFrame(self, frame, lastMarkerLocationX, lastMarkerLocationY):
+    def crop_frame(self, frame, last_marker_location_x, last_marker_location_y):
         if not self.trackerIsInitialized:
-            self.reducedImage = np.zeros((self.windowHeight, self.windowWidth,3), frame.dtype)
-        xCornerPos = lastMarkerLocationX - self.windowWidth / 2
-        yCornerPos = lastMarkerLocationY - self.windowHeight / 2
+            self.reducedImage = np.zeros((self.window_height, self.window_width, 3), frame.dtype)
+        x_corner_pos = last_marker_location_x - self.window_width / 2
+        y_corner_pos = last_marker_location_y - self.window_height / 2
         # Ensure that extracted window is inside the original image.
-        if xCornerPos < 1:
-            xCornerPos = 1
-        if yCornerPos < 1:
-            yCornerPos = 1
-        if xCornerPos > frame.shape[1] - self.windowWidth:
-            xCornerPos = frame.shape[1] - self.windowWidth
-        if yCornerPos > frame.shape[0] - self.windowHeight:
-            yCornerPos = frame.shape[0] - self.windowHeight
+        if x_corner_pos < 1:
+            x_corner_pos = 1
+        if y_corner_pos < 1:
+            y_corner_pos = 1
+        if x_corner_pos > frame.shape[1] - self.window_width:
+            x_corner_pos = frame.shape[1] - self.window_width
+        if y_corner_pos > frame.shape[0] - self.window_height:
+            y_corner_pos = frame.shape[0] - self.window_height
         try:
-            self.subImagePosition = (xCornerPos, yCornerPos, self.windowWidth, self.windowHeight)
+            self.subImagePosition = (x_corner_pos, y_corner_pos, self.window_width, self.window_height)
             self.reducedImage = frame[self.subImagePosition[1]:self.subImagePosition[1]+self.subImagePosition[3] , self.subImagePosition[0]:self.subImagePosition[0]+self.subImagePosition[2], :]
             self.frameGray = cv2.cvtColor(self.reducedImage, cv2.cv.CV_RGB2GRAY)
-
         except:
             print("frame: ", frame.dtype)
             print("originalImage: ", self.originalImage.shape[0], self.originalImage.shape[1], self.originalImage)
@@ -49,25 +49,24 @@ class TrackerInWindowMode:
             print "Unexpected error:", sys.exc_info()[0]
             pass
         
-    def locateMarker(self):
+    def locate_marker(self):
         (xm, ym) = self.markerTracker.locate_marker(self.frameGray)
 
-        redColor = (55, 55, 255)
-        blueColor = (255, 0, 0)
+        red_color = (55, 55, 255)
+        blue_color = (255, 0, 0)
 
         orientation = self.markerTracker.orientation
-        cv2.circle(self.reducedImage, (xm, ym), 4, redColor, 2)
+        cv2.circle(self.reducedImage, (xm, ym), 4, red_color, 2)
         xm2 = int(xm + 50*math.cos(orientation))
         ym2 = int(ym + 50*math.sin(orientation))
-        cv2.line(self.reducedImage, (xm, ym), (xm2, ym2), blueColor, 2)
+        cv2.line(self.reducedImage, (xm, ym), (xm2, ym2), blue_color, 2)
 
-        
         xm = xm + self.subImagePosition[0]
         ym = ym + self.subImagePosition[1]
 
         return MarkerPose(xm, ym, orientation, self.markerTracker.quality, self.markerTracker.order)
         
-    def showCroppedImage(self):
+    def show_cropped_image(self):
         pass
 
 

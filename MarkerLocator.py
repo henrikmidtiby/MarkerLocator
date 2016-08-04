@@ -39,7 +39,7 @@ class CameraDriver:
     def __init__(self, markerOrders = [6], defaultKernelSize = 21, scalingParameter = 2500):
         # Initialize camera driver.
         # Open output window.
-        
+
         cv2.namedWindow('filterdemo', cv2.cv.CV_WINDOW_AUTOSIZE)
 
         self.setFocus()
@@ -104,9 +104,9 @@ class CameraDriver:
             else:
                 # Search for marker around the old location.
                 self.processedFrame = self.currentFrame
-                self.windowedTrackers[k].cropFrame(self.currentFrame, self.oldLocations[k].x, self.oldLocations[k].y)
-                self.oldLocations[k] = self.windowedTrackers[k].locateMarker()
-                self.windowedTrackers[k].showCroppedImage()
+                self.windowedTrackers[k].crop_frame(self.currentFrame, self.oldLocations[k].x, self.oldLocations[k].y)
+                self.oldLocations[k] = self.windowedTrackers[k].locate_marker()
+                self.windowedTrackers[k].show_cropped_image()
     
     def drawDetectedMarkers(self):
         for k in range(len(self.trackers)):
@@ -345,8 +345,6 @@ class ImageDriver:
         pass
 
 
-
-
 class RosPublisher:
     def __init__(self, markers):
         # Instantiate ros publisher with information about the markers that 
@@ -360,48 +358,20 @@ class RosPublisher:
     def publishMarkerLocations(self, locations):
         j = 0
         for i in self.markers:
-	    print 'x%i %i  y%i %i  o%i %i' %(i, locations[j].x, i, locations[j].y, i, locations[j].theta)
-            #ros function        
-            self.pub[j].publish(  Point( locations[j].x, locations[j].y, locations[j].theta )  )
-            j = j + 1                
-        
+            print 'x%i %i  y%i %i  o%i %i' %(i, locations[j].x, i, locations[j].y, i, locations[j].theta)
+            # ros function
+            self.pub[j].publish(Point(locations[j].x, locations[j].y, locations[j].theta))
+            j += 1
+
 
 def main():
-    
-    t0 = time()
-    t1 = time()
-    t2 = time()
-
-    print 'function vers1 takes %f' %(t1-t0)
-    print 'function vers2 takes %f' %(t2-t1)
-    
-    toFind = [8]
+    toFind = [4]
 
     if PublishToROS:  
         RP = RosPublisher(toFind)
-       
-       
-       
-       
-       
-       
-    cd=ImageDriver(toFind, defaultKernelSize = 21)
-    cd.getImage()
-    cd.processFrame()
-    cd.drawDetectedMarkers()
-    cd.showProcessedFrame()
-    y = cd.returnPositions()
-       
-       
-       
-       
-       
-       
-       
-       
-       
-    #cd = CameraDriver(toFind, defaultKernelSize = 25) # Best in robolab.
-    cd = ImageDriver(toFind, defaultKernelSize = 21)
+
+    cd = CameraDriver(toFind, defaultKernelSize = 25) # Best in robolab.
+    #cd = ImageDriver(toFind, defaultKernelSize = 21)
     t0 = time()
      
      
@@ -413,10 +383,7 @@ def main():
         (t1, t0) = (t0, time())
         print "time for one iteration: %f" % (t0 - t1)
         cd.getImage()
-        t2 = time()
         cd.processFrame()
-        t3 = time()
-        print "time for processFrame: %f" % (t3 - t2)
         cd.drawDetectedMarkers()
         cd.showProcessedFrame()
         cd.handleKeyboardEvents()
@@ -424,13 +391,10 @@ def main():
         if PublishToROS:
             RP.publishMarkerLocations(y)
         else:
-            pass
-            #print y
             for k in range(len(y)):
                 try:
                     poseCorrected = perspectiveConverter.convertPose(y[k])
                     print("%8.3f %8.3f %8.3f %8.3f %s" % (poseCorrected.x, poseCorrected.y, poseCorrected.theta, poseCorrected.quality, poseCorrected.order))
-                    #print("%3d %3d %8.3f" % (y[0][0], y[0][1], y[0][2]))
                 except:
                     pass
                 
