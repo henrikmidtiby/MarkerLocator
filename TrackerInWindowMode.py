@@ -25,7 +25,6 @@ class TrackerInWindowMode:
     
     def cropFrame(self, frame, lastMarkerLocationX, lastMarkerLocationY):
         if(not self.trackerIsInitialized):
-            self.markerTracker.allocateSpaceGivenFirstFrame(self.originalImage)
             self.reducedImage = np.zeros((self.windowHeight, self.windowWidth,3), frame.dtype)
         xCornerPos = lastMarkerLocationX - self.windowWidth / 2
         yCornerPos = lastMarkerLocationY - self.windowHeight / 2
@@ -54,7 +53,7 @@ class TrackerInWindowMode:
             pass
         
     def locateMarker(self):
-        (xm, ym) = self.markerTracker.locateMarker(self.frameGray)
+        (xm, ym) = self.markerTracker.locate_marker(self.frameGray)
         #xm = 50
         #ym = 50
         #cv.Line(self.reducedImage, (0, ym), (self.originalImage.width, ym), (0, 0, 255)) # B, G, R

@@ -41,9 +41,7 @@ class ImageAnalyzer:
         
         self.originalImage = np.zeros (reducedDimensions+(3,), dtype=np.float32)
         self.reducedImage = np.zeros (reducedDimensions+(frame.shape[2],), dtype=np.float32)
-        for k in range(len(self.markerTrackers)):
-            self.markerTrackers[k].allocateSpaceGivenFirstFrame(self.reducedImage)
-    
+
     # Is called with a colour image.
     def analyzeImage(self, frame):
         assert(frame.shape[2] == 3)
@@ -59,7 +57,7 @@ class ImageAnalyzer:
         self.frameGray=cv2.cvtColor(self.originalImage,cv2.cv.CV_RGB2GRAY)
 
         for k in range(len(self.markerTrackers)):
-            markerLocation = self.markerTrackers[k].locateMarker(self.frameGray)
+            markerLocation = self.markerTrackers[k].locate_marker(self.frameGray)
             (xm, ym) = markerLocation
             (xm, ym) = (self.downscaleFactor * xm, self.downscaleFactor * ym)
             self.markerLocationsX[k] = xm

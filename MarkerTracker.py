@@ -10,152 +10,131 @@ import math
 
 
 class MarkerTracker:
-    '''
+    """
     Purpose: Locate a certain marker in an image.
-    '''
-    def __init__(self, order, kernelSize, scaleFactor):
-        self.kernelSize = kernelSize
-        (kernelReal, kernelImag) = self.generateSymmetryDetectorKernel(order, kernelSize)
+    """
+
+    def __init__(self, order, kernel_size, scale_factor):
+        self.kernel_size = kernel_size
+        (kernel_real, kernel_imag) = self.generate_symmetry_detector_kernel(order, kernel_size)
+
         self.order = order
-        self.matReal = np.zeros((kernelSize, kernelSize), dtype=np.float32)
-        self.matImag = np.zeros((kernelSize, kernelSize), dtype=np.float32)
-        for i in range(kernelSize):
-            for j in range(kernelSize):
-                self.matReal[i, j] = kernelReal[i][j] / scaleFactor
-                self.matImag[i, j] = kernelImag[i][j] / scaleFactor
-        self.lastMarkerLocation = (None, None)
+        self.mat_real = kernel_real / scale_factor
+        self.mat_imag = kernel_imag / scale_factor
+
+        self.frame_real = None
+        self.frame_imag = None
+        self.last_marker_location = None
         self.orientation = None
 
-        (kernelRealThirdHarmonics, kernelImagThirdHarmonics) = self.generateSymmetryDetectorKernel(3*order, kernelSize)
-        self.matRealThirdHarmonics = np.zeros((kernelSize, kernelSize), np.float32)
-        self.matImagThirdHarmonics = np.zeros((kernelSize, kernelSize), np.float32)
-        for i in range(kernelSize):
-            for j in range(kernelSize):
-                self.matRealThirdHarmonics[i, j] = kernelRealThirdHarmonics[i][j] / scaleFactor
-                self.matImagThirdHarmonics[i, j] = kernelImagThirdHarmonics[i][j] / scaleFactor
+        # Create kernel used to remove arm in quality-measure
+        (kernel_remove_arm_real, kernel_remove_arm_imag) = self.generate_symmetry_detector_kernel(1, self.kernel_size)
+        self.kernelComplex = np.array(kernel_real + 1j*kernel_imag, dtype=complex)
+        self.KernelRemoveArmComplex = np.array(kernel_remove_arm_real + 1j*kernel_remove_arm_imag, dtype=complex)
 
-        self.quality = 0
-                  
-    def generateSymmetryDetectorKernel(self, order, kernelsize):
-        valueRange = np.linspace(-1, 1, kernelsize);
-        temp1 = np.meshgrid(valueRange, valueRange)
-        kernel = temp1[0] + 1j*temp1[1];
+        # Values used in quality-measure
+        absolute = np.absolute(self.kernelComplex)
+        self.threshold = 0.4*absolute.max()
+        self.quality = None
+        self.y1 = int(math.floor(float(self.kernel_size)/2))
+        self.y2 = int(math.ceil(float(self.kernel_size)/2))
+        self.x1 = int(math.floor(float(self.kernel_size)/2))
+        self.x2 = int(math.ceil(float(self.kernel_size)/2))
 
-        magni = abs(kernel);
-        kernel = kernel**order;
-        kernel = kernel*np.exp(-8*magni**2);
-         
-        return (np.real(kernel), np.imag(kernel))
+    @staticmethod
+    def generate_symmetry_detector_kernel(order, kernel_size):
+        # type: (int, int) -> numpy.ndarray
+        value_range = np.linspace(-1, 1, kernel_size)
+        temp1 = np.meshgrid(value_range, value_range)
+        kernel = temp1[0] + 1j * temp1[1]
 
-    def allocateSpaceGivenFirstFrame(self, frame):
-        framewidth=frame.shape[1]
-        frameheight=frame.shape[0]
-        self.newFrameImage32F = np.zeros((frameheight, framewidth,3), dtype=np.float32)
-        self.newFrameImage32F = np.zeros((frameheight, framewidth,3), dtype=np.float32)
-        self.frameReal = np.zeros((frameheight,framewidth,1), dtype=np.float32)
-        self.frameImag = np.zeros((frameheight,framewidth,1), dtype=np.float32)
-        self.frameRealThirdHarmonics = np.zeros((frameheight,framewidth,1), dtype=np.float32)
-        self.frameImagThirdHarmonics = np.zeros((frameheight,framewidth,1), dtype=np.float32)
-        self.frameRealSq = np.zeros((frameheight,framewidth,1), dtype=np.float32)
-        self.frameImagSq = np.zeros((frameheight,framewidth,1), dtype=np.float32)
-        self.frameSumSq = np.zeros((frameheight,framewidth,1), dtype=np.float32)
+        magnitude = abs(kernel)
+        kernel = np.power(kernel, order)
+        kernel = kernel * np.exp(-8 * magnitude ** 2)
 
+        return np.real(kernel), np.imag(kernel)
 
-    def locateMarker(self, frame):
-        self.frameReal = frame
-        self.frameImag = frame
-        self.frameRealThirdHarmonics = frame
-        self.frameImagThirdHarmonics = frame
+    def locate_marker(self, frame):
+        self.frame_real = frame.copy()
+        self.frame_imag = frame.copy()
 
         # Calculate convolution and determine response strength.
-        self.frameReal = cv2.filter2D(self.frameReal, cv2.CV_32F, self.matReal)
-        self.frameImag = cv2.filter2D(self.frameImag, cv2.CV_32F, self.matImag)
-        
-        
-        
-        self.frameRealSq = np.multiply(self.frameReal, self.frameReal)
-        self.frameImagSq = np.multiply(self.frameImag, self.frameImag)
-        self.frameSumSq = self.frameRealSq + self.frameImagSq
+        self.frame_real = cv2.filter2D(self.frame_real, cv2.CV_32F, self.mat_real)
+        self.frame_imag = cv2.filter2D(self.frame_imag, cv2.CV_32F, self.mat_imag)
+        frame_real_squared = cv2.multiply(self.frame_real, self.frame_real, dtype=cv2.CV_32F)
+        frame_imag_squared = cv2.multiply(self.frame_imag, self.frame_imag, dtype=cv2.CV_32F)
+        frame_sum_squared = cv2.add(frame_real_squared, frame_imag_squared, dtype=cv2.CV_32F)
 
-        # Calculate convolution of third harmonics for quality estimation.
-        self.frameRealThirdHarmonics = cv2.filter2D(self.frameRealThirdHarmonics, cv2.CV_32F, self.matRealThirdHarmonics)
-        self.frameImagThirdHarmonics = cv2.filter2D(self.frameImagThirdHarmonics, cv2.CV_32F, self.matImagThirdHarmonics)
-        
-        min_val, max_val, min_loc, max_loc = cv2.minMaxLoc(self.frameSumSq)
-        self.lastMarkerLocation = max_loc
-        (xm, ym) = max_loc
-        self.determineMarkerOrientation(frame)
-        self.determineMarkerQuality()
+        min_val, max_val, min_loc, max_loc = cv2.minMaxLoc(frame_sum_squared)
+        self.last_marker_location = max_loc
+        self.determine_marker_orientation(frame)
+        self.determine_marker_quality(frame)
+
         return max_loc
 
-    def determineMarkerOrientation(self, frame):    
-        (xm, ym) = self.lastMarkerLocation
-        #realval = cv.Get2D(self.frameReal, ym, xm)[0]
-        #imagval = cv.Get2D(self.frameImag, ym, xm)[0]
-        realval=self.frameReal[ym, xm]
-        imagval = self.frameImag[ym, xm]
-        
-        self.orientation = (math.atan2(-realval, imagval) - math.pi / 2) / self.order
+    def determine_marker_orientation(self, frame):
+        (xm, ym) = self.last_marker_location
+        real_value = self.frame_real[ym, xm]
+        imag_value = self.frame_imag[ym, xm]
+        self.orientation = (math.atan2(-real_value, imag_value) - math.pi / 2) / self.order
 
-        maxValue = 0
-        maxOrient = 0
-        searchDist = self.kernelSize / 3
+        max_value = 0
+        max_orientation = 0
+        search_distance = self.kernel_size / 3
         for k in range(self.order):
             orient = self.orientation + 2 * k * math.pi / self.order
-            xm2 = int(xm + searchDist*math.cos(orient))
-            ym2 = int(ym + searchDist*math.sin(orient))
-            if(xm2 > 0 and ym2 > 0 and xm2 < frame.shape[1] and ym2 < frame.shape[0]):
-                try:
-                    intensity = frame[ym2,xm2]
-                    if(intensity[0] > maxValue):
-                        maxValue = intensity[0]
-                        maxOrient = orient
-                except:
-                    print("determineMarkerOrientation: error: %d %d %d %d" % (ym2, xm2, frame.shape[1], frame.shape[0]))
-                    pass
+            xm2 = int(xm + search_distance * math.cos(orient))
+            ym2 = int(ym + search_distance * math.sin(orient))
+            try:
+                intensity = frame[ym2, xm2]
+                if intensity > max_value:
+                    max_value = intensity
+                    max_orientation = orient
+            except Exception as e:
+                print("determineMarkerOrientation: error: %d %d %d %d" % (ym2, xm2, frame.shape[1], frame.shape[0]))
+                print(e)
+                pass
 
-        self.orientation = self.limitAngleToRange(maxOrient)
+        self.orientation = self.limit_angle_to_range(max_orientation)
 
-    def determineMarkerQuality(self):
-        (xm, ym) = self.lastMarkerLocation
-#        realval = cv.Get2D(self.frameReal, ym, xm)[0]
-#        imagval = cv.Get2D(self.frameImag, ym, xm)[0]
-
-        realval=self.frameReal[ym, xm]
-        imagval = self.frameImag[ym, xm]        
-
-        realvalThirdHarmonics = self.frameRealThirdHarmonics[ym, xm]
-        imagvalThirdHarmonics = self.frameImagThirdHarmonics[ym, xm]
-        
-        
-        
-        argumentPredicted = 3*math.atan2(-realval, imagval)
-        argumentThirdHarmonics = math.atan2(-realvalThirdHarmonics, imagvalThirdHarmonics)
-        argumentPredicted = self.limitAngleToRange(argumentPredicted)
-        argumentThirdHarmonics = self.limitAngleToRange(argumentThirdHarmonics)
-        difference = self.limitAngleToRange(argumentPredicted - argumentThirdHarmonics)
-        strength = math.sqrt(realval*realval + imagval*imagval)
-        strengthThirdHarmonics = math.sqrt(realvalThirdHarmonics*realvalThirdHarmonics + imagvalThirdHarmonics*imagvalThirdHarmonics)
-        #print("Arg predicted: %5.2f  Arg found: %5.2f  Difference: %5.2f" % (argumentPredicted, argumentThirdHarmonics, difference))        
-        #print("angdifferenge: %5.2f  strengthRatio: %8.5f" % (difference, strengthThirdHarmonics / strength))
-        # angdifference \in [-0.2; 0.2]
-        # strengthRatio \in [0.03; 0.055]
-        self.quality = math.exp(-math.pow(difference/0.3, 2))
-        #self.printMarkerQuality(self.quality)
-        
-    def printMarkerQuality(self, quality):
-        stars = ""        
-        if(quality > 0.5):
-            stars = "**"
-        if(quality > 0.7):
-            stars = "***"
-        if(quality > 0.9):
-            stars = "****"
-        print("quality = %d): %5.2f %s" % (self.order, quality, stars))
-        
-    def limitAngleToRange(self, angle):
-        while(angle < math.pi):
-            angle += 2*math.pi
-        while(angle > math.pi):
-            angle -= 2*math.pi
+    @staticmethod
+    def limit_angle_to_range(angle):
+        while angle < math.pi:
+            angle += 2 * math.pi
+        while angle > math.pi:
+            angle -= 2 * math.pi
         return angle
+
+    def determine_marker_quality(self, frame):
+        template = self.generate_template_for_quality_estimator()
+        try:
+            frame_img = self.extract_window_around_maker_location(frame)
+            frame_w, frame_h = frame_img.shape
+            template = template[0:frame_h, 0:frame_w].astype(np.uint8)
+
+            # For the quality estimator cv2.TM_CCORR_NORMED shows best results.
+            quality_match = cv2.matchTemplate(frame_img, template, cv2.TM_CCORR_NORMED)
+            self.quality = quality_match[0, 0]
+        except Exception as e:
+            print "error"
+            print e
+            self.quality = 0.0
+            return
+
+    def extract_window_around_maker_location(self, frame):
+        (xm, ym) = self.last_marker_location
+        frame_tmp = np.array(frame[ym - self.y1:ym + self.y2, xm - self.x1:xm + self.x2])
+        frame_img = frame_tmp.astype(np.uint8)
+        return frame_img
+
+    def generate_template_for_quality_estimator(self):
+        phase = np.exp((self.limit_angle_to_range(-self.orientation)) * 1j)
+        angle_threshold = 3.14 / (2 * self.order)
+        t1 = (self.kernelComplex * np.power(phase, self.order)).real > self.threshold
+        t2 = (self.kernelComplex * np.power(phase, self.order)).real < -self.threshold
+        img_t1_t2_diff = t1.astype(np.float32) - t2.astype(np.float32)
+        t3 = np.angle(self.KernelRemoveArmComplex * phase) < angle_threshold
+        t4 = np.angle(self.KernelRemoveArmComplex * phase) > -angle_threshold
+        mask = 1 - 1 * (t3 & t4)
+        template = ((1 - img_t1_t2_diff * mask) * 255).astype(np.uint8)
+        return template
