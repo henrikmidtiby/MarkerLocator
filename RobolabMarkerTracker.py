@@ -92,7 +92,10 @@ class CameraDriver:
             xm = self.old_locations[k].x
             ym = self.old_locations[k].y
             orientation = self.old_locations[k].theta
-            cv2.circle(self.processed_frame, (xm, ym), 4, (55, 55, 255), 2)
+            if self.old_locations[k].quality < 0.9:
+                cv2.circle(self.processed_frame, (xm, ym), 4, (55, 55, 255), 1)
+            else:
+                cv2.circle(self.processed_frame, (xm, ym), 4, (55, 55, 255), 3)
 
             xm2 = int(xm + 50 * math.cos(orientation))
             ym2 = int(ym + 50 * math.sin(orientation))
