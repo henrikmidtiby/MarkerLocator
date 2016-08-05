@@ -60,6 +60,7 @@ class CameraDriver:
         # Storage for trackers.
         self.trackers = []
         self.windowed_trackers = []
+        self.use_windowed_trackers = True
         self.old_locations = []
 
         # Initialize trackers.
@@ -95,7 +96,7 @@ class CameraDriver:
     def processFrame(self):
         # Locate all markers in image.
         for k in range(len(self.trackers)):
-            if self.old_locations[k].x is None:
+            if (self.old_locations[k].x is None) or (not self.use_windowed_trackers):
                 # Previous marker location is unknown, search in the entire image.
                 self.processed_frame = self.trackers[k].analyzeImage(self.current_frame)
                 markerX = self.trackers[k].markerLocationsX[0]
@@ -150,85 +151,37 @@ class CameraDriver:
         return self.old_locations
 
 
-class ImageDriver:
+class ImageDriver(CameraDriver):
     """
     Purpose: Same as cameraDriver, but for single image
     """
     def __init__(self, markerOrders = [7, 8], defaultKernelSize = 21, scalingParameter = 2500):
 
         # Storage for image processing.
-        self.currentFrame = None
-        self.processedFrame = None
+        self.current_frame = None
+        self.processed_frame = None
         self.running = True
 
         # Storage for trackers.
+        self.use_windowed_trackers = False
         self.trackers = []
-        self.oldLocations = []
+        self.old_locations = []
 
         # Initialize trackers.
         for markerOrder in markerOrders:
             temp = ImageAnalyzer(downscaleFactor=1)
             temp.add_marker_to_track(markerOrder, defaultKernelSize, scalingParameter)
             self.trackers.append(temp)
-            self.oldLocations.append(MarkerPose(None, None, None, None))
+            self.old_locations.append(MarkerPose(None, None, None, None))
 
         self.cnt = 0
         self.defaultOrientation = 0
 
     def getImage(self):
         # Get image from camera.
-        self.currentFrame = cv2.imread('/home/henrik/Dropbox/Camera Uploads/2015-11-12 10.06.20.jpg')
-        if not isinstance(self.currentFrame, (np.ndarray, np.generic)):
+        self.current_frame = cv2.imread('/home/henrik/Dropbox/Camera Uploads/2015-11-12 10.06.20.jpg')
+        if not isinstance(self.current_frame, (np.ndarray, np.generic)):
             raise TypeError('Your input type is not a numpy array')
-
-    def drawDetectedMarkers(self):
-        for k in range(len(self.trackers)):
-            xm = self.oldLocations[k].x
-            ym = self.oldLocations[k].y
-            cv2.circle(self.processedFrame, (xm, ym), 4, (55, 55, 255), 2)
-            xm2 = xm + 20
-            ym2 = ym + 20
-            cv2.line(self.processedFrame, (xm, ym), (xm2, ym2), (255, 0, 0), 2)
-        
-    def processFrame(self):
-        # Locate all markers in image.
-        for k in range(len(self.trackers)):
-            # Previous marker location is unknown, search in the entire image.
-            if not isinstance(self.currentFrame, (np.ndarray, np.generic)):
-                raise TypeError('Your input type is not a numpy array')
-            self.processedFrame = self.trackers[k].analyzeImage(self.currentFrame)
-            markerX = self.trackers[k].markerLocationsX[0]
-            markerY = self.trackers[k].markerLocationsY[0]
-            orientation = self.trackers[k].markerTrackers[0].orientation
-            quality = self.trackers[k].markerTrackers[0].quality
-            self.oldLocations[k] = MarkerPose(markerX, markerY, orientation, quality)
-            
-    def showProcessedFrame(self):
-        cv2.imshow('filterdemo', self.processedFrame)
-        cv2.waitKey(1)
-
-    def handleKeyboardEvents(self):
-        # Listen for keyboard events and take relevant actions.
-        key = cv2.waitKey(20)
-        # Discard higher order bit, http://permalink.gmane.org/gmane.comp.lib.opencv.devel/410
-        key = key & 0xff
-        if key == 27: # Esc
-            self.running = False
-        if key == 114: # R
-            print("Resetting")
-            self.resetAllLocations()
-        if key == 115: # S
-            # save image
-            print("Saving image")
-            filename = strftime("%Y-%m-%d %H-%M-%S")
-            cv2.imwrite("output/%s.png" % filename, self.currentFrame)
-
-    def returnPositions(self):
-        # Return list of all marker locations.
-        return self.oldLocations
-
-    def resetAllLocations(self):
-        pass
 
 
 class RosPublisher:
@@ -257,7 +210,8 @@ def main():
         ros_publisher = RosPublisher(list_of_markers_to_find)
 
     cd = CameraDriver(list_of_markers_to_find, defaultKernelSize = 25) # Best in robolab.
-    #cd = ImageDriver(toFind, defaultKernelSize = 21)
+    cd.use_windowed_trackers = False
+    #cd = ImageDriver(list_of_markers_to_find, defaultKernelSize = 21)
     t0 = time()
 
     # Calibration of setup in robolab, so that the coordinates correspond to real world coordinates.
