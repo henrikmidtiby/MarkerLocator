@@ -7,6 +7,7 @@ Marker tracker for locating n-fold edges in images using convolution.
 import cv2
 import numpy as np
 import math
+from MarkerPose import MarkerPose
 
 
 class MarkerTracker:
@@ -41,6 +42,9 @@ class MarkerTracker:
         self.x1 = int(math.floor(float(self.kernel_size)/2))
         self.x2 = int(math.ceil(float(self.kernel_size)/2))
 
+        # Information about the located marker.
+        self.pose = None
+
     @staticmethod
     def generate_symmetry_detector_kernel(order, kernel_size):
         # type: (int, int) -> numpy.ndarray
@@ -70,7 +74,8 @@ class MarkerTracker:
         self.determine_marker_orientation(frame)
         self.determine_marker_quality(frame)
 
-        return max_loc
+        self.pose = MarkerPose(max_loc[0], max_loc[1], self.orientation, self.quality, self.order)
+        return self.pose
 
     def determine_marker_orientation(self, frame):
         (xm, ym) = self.last_marker_location

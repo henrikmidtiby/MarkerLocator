@@ -1,6 +1,5 @@
 #!/usr/bin/env python
 from time import time, strftime
-import sys
 import os
 
 # sys.path.append('/opt/ros/indigo/lib/python2.7/dist-packages')
@@ -36,19 +35,31 @@ if PublishToROS:
     import rospy
     from geometry_msgs.msg import Point
 
-    
+
+def set_camera_focus():
+    # Disable autofocus
+    os.system('v4l2-ctl -d 1 -c focus_auto=0')
+
+    # Set focus to a specific value. High values for nearby objects and
+    # low values for distant objects.
+    os.system('v4l2-ctl -d 1 -c focus_absolute=0')
+
+    # sharpness (int)    : min=0 max=255 step=1 default=128 value=128
+    os.system('v4l2-ctl -d 1 -c sharpness=200')
+
+
 class CameraDriver:
     """
     Purpose: capture images from a camera and delegate procesing of the 
     images to a different class.
     """
-    def __init__(self, marker_orders = [6], defaultKernelSize = 21, scalingParameter = 2500):
+    def __init__(self, marker_orders = [6], default_kernel_size = 21, scaling_parameter = 2500):
         # Initialize camera driver.
         # Open output window.
         cv2.namedWindow('filterdemo', cv2.cv.CV_WINDOW_AUTOSIZE)
 
         # Select the camera where the images should be grabbed from.
-        self.set_camera_focus()
+        set_camera_focus()
         self.camera = cv2.VideoCapture(0)
         self.set_camera_resolution()
 
@@ -65,53 +76,46 @@ class CameraDriver:
 
         # Initialize trackers.
         for marker_order in marker_orders:
-            temp = ImageAnalyzer(downscaleFactor=1)
-            temp.add_marker_to_track(marker_order, defaultKernelSize, scalingParameter)
+            temp = ImageAnalyzer(downscale_factor=1)
+            temp.add_marker_to_track(marker_order, default_kernel_size, scaling_parameter)
             self.trackers.append(temp)
-            self.windowed_trackers.append(TrackerInWindowMode(marker_order, defaultKernelSize))
+            self.windowed_trackers.append(TrackerInWindowMode(marker_order, default_kernel_size))
             self.old_locations.append(MarkerPose(None, None, None, None))
 
         self.cnt = 0
         self.defaultOrientation = 0
 
-    def set_camera_focus(self):
-        # Disable autofocus
-        os.system('v4l2-ctl -d 1 -c focus_auto=0')
-        
-        # Set focus to a specific value. High values for nearby objects and
-        # low values for distant objects.
-        os.system('v4l2-ctl -d 1 -c focus_absolute=0')
-
-        # sharpness (int)    : min=0 max=255 step=1 default=128 value=128
-        os.system('v4l2-ctl -d 1 -c sharpness=200')
-
     def set_camera_resolution(self):
         self.camera.set(cv2.cv.CV_CAP_PROP_FRAME_WIDTH, 1920)
         self.camera.set(cv2.cv.CV_CAP_PROP_FRAME_HEIGHT, 1080)
 
-    def getImage(self):
+    def get_image(self):
         # Get image from camera.
-        self.current_frame = self.camera.read()[1]
+        for k in range(5):
+            self.current_frame = self.camera.read()[1]
 
-    def processFrame(self):
+    def process_frame(self):
         # Locate all markers in image.
         for k in range(len(self.trackers)):
             if (self.old_locations[k].x is None) or (not self.use_windowed_trackers):
                 # Previous marker location is unknown, search in the entire image.
-                self.processed_frame = self.trackers[k].analyzeImage(self.current_frame)
-                markerX = self.trackers[k].markerLocationsX[0]
-                markerY = self.trackers[k].markerLocationsY[0]
+                self.processed_frame = self.trackers[k].analyze_image(self.current_frame)
+                marker_x = self.trackers[k].markerLocationsX[0]
+                marker_y = self.trackers[k].markerLocationsY[0]
+                orientation = self.trackers[k].orientation
                 order = self.trackers[k].markerTrackers[0].order
                 quality = self.trackers[k].markerTrackers[0].quality
-                self.old_locations[k] = MarkerPose(markerX, markerY, self.defaultOrientation, quality, order)
+                self.old_locations[k] = MarkerPose(marker_x, marker_y, orientation, quality, order)
             else:
                 # Search for marker around the old location.
                 self.processed_frame = self.current_frame
-                self.windowed_trackers[k].crop_frame(self.current_frame, self.old_locations[k].x, self.old_locations[k].y)
+                self.windowed_trackers[k].crop_frame(self.current_frame,
+                                                     self.old_locations[k].x,
+                                                     self.old_locations[k].y)
                 self.old_locations[k] = self.windowed_trackers[k].locate_marker()
                 self.windowed_trackers[k].show_cropped_image()
     
-    def drawDetectedMarkers(self):
+    def draw_detected_markers(self):
         for k in range(len(self.trackers)):
             xm = self.old_locations[k].x
             ym = self.old_locations[k].y
@@ -122,31 +126,31 @@ class CameraDriver:
             ym2 = int(ym + 50*math.sin(orientation))
             cv2.line(self.processed_frame, (xm, ym), (xm2, ym2), (255, 0, 0), 2)
     
-    def showProcessedFrame(self):
+    def show_processed_frame(self):
         cv2.imshow('filterdemo', self.processed_frame)
 
-    def resetAllLocations(self):
+    def reset_all_locations(self):
         # Reset all markers locations, forcing a full search on the next iteration.
         for k in range(len(self.trackers)):
             self.old_locations[k] = MarkerPose(None, None, None, None)
         
-    def handleKeyboardEvents(self):
+    def handle_keyboard_events(self):
         # Listen for keyboard events and take relevant actions.
         key = cv2.waitKey(100) 
         # Discard higher order bit, http://permalink.gmane.org/gmane.comp.lib.opencv.devel/410
         key = key & 0xff
-        if key == 27: # Esc
+        if key == 27:  # Esc
             self.running = False
-        if key == 114: # R
+        if key == 114:  # R
             print("Resetting")
-            self.resetAllLocations()
-        if key == 115: # S
+            self.reset_all_locations()
+        if key == 115:  # S
             # save image
             print("Saving image")
             filename = strftime("%Y-%m-%d %H-%M-%S")
             cv2.imwrite("output/%s.png" % filename, self.current_frame)
 
-    def returnPositions(self):
+    def return_positions(self):
         # Return list of all marker locations.
         return self.old_locations
 
@@ -155,7 +159,7 @@ class ImageDriver(CameraDriver):
     """
     Purpose: Same as cameraDriver, but for single image
     """
-    def __init__(self, markerOrders = [7, 8], defaultKernelSize = 21, scalingParameter = 2500):
+    def __init__(self, marker_orders = [7, 8], default_kernel_size = 21, scaling_parameter = 2500):
 
         # Storage for image processing.
         self.current_frame = None
@@ -168,16 +172,16 @@ class ImageDriver(CameraDriver):
         self.old_locations = []
 
         # Initialize trackers.
-        for markerOrder in markerOrders:
-            temp = ImageAnalyzer(downscaleFactor=1)
-            temp.add_marker_to_track(markerOrder, defaultKernelSize, scalingParameter)
+        for markerOrder in marker_orders:
+            temp = ImageAnalyzer(downscale_factor=1)
+            temp.add_marker_to_track(markerOrder, default_kernel_size, scaling_parameter)
             self.trackers.append(temp)
             self.old_locations.append(MarkerPose(None, None, None, None))
 
         self.cnt = 0
         self.defaultOrientation = 0
 
-    def getImage(self):
+    def get_image(self):
         # Get image from camera.
         self.current_frame = cv2.imread('/home/henrik/Dropbox/Camera Uploads/2015-11-12 10.06.20.jpg')
         if not isinstance(self.current_frame, (np.ndarray, np.generic)):
@@ -191,10 +195,10 @@ class RosPublisher:
         self.pub = []
         self.markers = markers
         for i in markers:
-            self.pub.append( rospy.Publisher('positionPuplisher' + str(i), Point, queue_size = 10)  )
+            self.pub.append( rospy.Publisher('positionPuplisher' + str(i), Point, queue_size = 10))
         rospy.init_node('FrobitLocator')
 
-    def publishMarkerLocations(self, locations):
+    def publish_marker_locations(self, locations):
         j = 0
         for i in self.markers:
             print 'x%i %i  y%i %i  o%i %i' %(i, locations[j].x, i, locations[j].y, i, locations[j].theta)
@@ -209,34 +213,39 @@ def main():
     if PublishToROS:  
         ros_publisher = RosPublisher(list_of_markers_to_find)
 
-    cd = CameraDriver(list_of_markers_to_find, defaultKernelSize = 25) # Best in robolab.
+    cd = CameraDriver(list_of_markers_to_find, default_kernel_size=25)  # Best in robolab.
     cd.use_windowed_trackers = False
-    #cd = ImageDriver(list_of_markers_to_find, defaultKernelSize = 21)
+    # cd = ImageDriver(list_of_markers_to_find, defaultKernelSize = 21)
     t0 = time()
 
     # Calibration of setup in robolab, so that the coordinates correspond to real world coordinates.
     reference_point_locations_in_image = [[1328, 340], [874, 346], [856, 756], [1300, 762]]
     reference_point_locations_in_world_coordinates = [[0, 0], [300, 0], [300, 250], [0, 250]]
-    perspective_corrector = PerspectiveCorrecter(reference_point_locations_in_image, reference_point_locations_in_world_coordinates)
+    perspective_corrector = PerspectiveCorrecter(reference_point_locations_in_image,
+                                                 reference_point_locations_in_world_coordinates)
      
     while cd.running:
         (t1, t0) = (t0, time())
         print "time for one iteration: %f" % (t0 - t1)
-        cd.getImage()
-        cd.processFrame()
-        cd.drawDetectedMarkers()
-        cd.showProcessedFrame()
-        cd.handleKeyboardEvents()
-        y = cd.returnPositions()     
+        cd.get_image()
+        cd.process_frame()
+        cd.draw_detected_markers()
+        cd.show_processed_frame()
+        cd.handle_keyboard_events()
+        y = cd.return_positions()
         if PublishToROS:
-            ros_publisher.publishMarkerLocations(y)
+            ros_publisher.publish_marker_locations(y)
         else:
             for k in range(len(y)):
                 try:
                     pose_corrected = perspective_corrector.convertPose(y[k])
-                    print("%8.3f %8.3f %8.3f %8.3f %s" % (pose_corrected.x, pose_corrected.y, pose_corrected.theta, pose_corrected.quality, pose_corrected.order))
-                except:
-                    pass
+                    print("%8.3f %8.3f %8.3f %8.3f %s" % (pose_corrected.x,
+                                                          pose_corrected.y,
+                                                          pose_corrected.theta,
+                                                          pose_corrected.quality,
+                                                          pose_corrected.order))
+                except Exception as e:
+                    print("%s" % e)
                 
     print("Stopping")
 

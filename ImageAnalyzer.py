@@ -10,61 +10,26 @@ import numpy as np
 
 from MarkerTracker import MarkerTracker
 
+
 class ImageAnalyzer:
-    '''
+    """
     Purpose: Locate markers in the presented images.
-    '''
-    def __init__(self, downscaleFactor = 2):
-        self.downscaleFactor = downscaleFactor
+    """
+    def __init__(self, downscale_factor=2):
+        self.downscale_factor = downscale_factor
         self.markerTrackers = []
-        self.tempImage = None
-        self.greyScaleImage = None
-        self.subClassesInitialized = False
-        self.markerLocationsX = []
-        self.markerLocationsY = []
-        self.quality = None
         pass
 
-    def add_marker_to_track(self, order, kernelSize, scaleFactor):
-        self.markerTrackers.append(MarkerTracker(order, kernelSize, scaleFactor))
-        self.markerLocationsX.append(0)
-        self.markerLocationsY.append(0)
-        self.subClassesInitialized = False 
-    
-    # Is called with a colour image.
-    def initializeSubClasses(self, frame):
-        self.subClassesInitialized = True
-        reducedWidth = frame.shape[1] / self.downscaleFactor
-        reducedHeight = frame.shape[0] / self.downscaleFactor
-        reducedDimensions = (reducedHeight, reducedWidth)
-        self.frameGray = np.zeros (reducedDimensions+(1,), dtype=np.float32)
-        self.frameGray = np.zeros (reducedDimensions+(1,), dtype=np.float32)
-        
-        self.originalImage = np.zeros (reducedDimensions+(3,), dtype=np.float32)
-        self.reducedImage = np.zeros (reducedDimensions+(frame.shape[2],), dtype=np.float32)
+    def add_marker_to_track(self, order, kernel_size, scale_factor):
+        self.markerTrackers.append(MarkerTracker(order, kernel_size, scale_factor))
 
-    # Is called with a colour image.
-    def analyzeImage(self, frame):
-        #assert(frame.shape[2] == 3)
-        if self.subClassesInitialized is False:
-            self.initializeSubClasses(frame)
-
-        #cv.Resize(frame, self.reducedImage)
-        self.reducedImage = cv2.resize(frame,(0,0), fx=1.0/self.downscaleFactor, fy=1.0/self.downscaleFactor)
-
-        self.originalImage=self.reducedImage
-        #cv.ConvertScale(self.reducedImage, self.originalImage)
-        #cv.CvtColor(self.originalImage, self.frameGray, cv.CV_RGB2GRAY)
-        self.frameGray=cv2.cvtColor(self.originalImage,cv2.cv.CV_RGB2GRAY)
+    def analyze_image(self, frame):
+        reduced_image = cv2.resize(frame, (0,0), fx=1.0/self.downscale_factor, fy=1.0 / self.downscale_factor)
+        original_image = reduced_image
+        frame_gray = cv2.cvtColor(original_image, cv2.cv.CV_RGB2GRAY)
 
         for k in range(len(self.markerTrackers)):
-            markerLocation = self.markerTrackers[k].locate_marker(self.frameGray)
-            (xm, ym) = markerLocation
-            (xm, ym) = (self.downscaleFactor * xm, self.downscaleFactor * ym)
-            self.markerLocationsX[k] = xm
-            self.markerLocationsY[k] = ym
-            self.quality = self.markerTrackers[k].quality
-            #cv.Line(frame, (0, ym), (frame.width, ym), (0, 0, 255)) # B, G, R
-            #cv.Line(frame, (xm, 0), (xm, frame.height), (0, 0, 255))
+            self.markerTrackers[k].locate_marker(frame_gray)
+            self.markerTrackers[k].pose.scale_position(self.downscale_factor)
 
         return frame
