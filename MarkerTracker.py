@@ -119,7 +119,8 @@ class MarkerTracker:
 
             # For the quality estimator cv2.TM_CCORR_NORMED shows best results.
             quality_match = cv2.matchTemplate(frame_img, template, cv2.TM_CCORR_NORMED)
-            self.quality = quality_match[0, 0]
+            temp_value_for_quality = quality_match[0, 0]
+            self.quality = float(temp_value_for_quality)
         except Exception as e:
             print "error"
             print e

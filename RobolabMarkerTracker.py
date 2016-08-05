@@ -41,7 +41,7 @@ class CameraDriver:
     images to a different class.
     """
 
-    def __init__(self, marker_orders=[6], default_kernel_size=21, scaling_parameter=2500):
+    def __init__(self, marker_orders=[6], default_kernel_size=21, scaling_parameter=2500, downscale_factor = 1):
         # Initialize camera driver.
         # Open output window.
         cv2.namedWindow('filterdemo', cv2.cv.CV_WINDOW_AUTOSIZE)
@@ -55,6 +55,7 @@ class CameraDriver:
         self.current_frame = None
         self.processed_frame = None
         self.running = True
+        self.downscale_factor = downscale_factor
 
         # Storage for trackers.
         self.trackers = []
@@ -79,10 +80,12 @@ class CameraDriver:
         self.processed_frame = self.current_frame
         # Locate all markers in image.
         frame_gray = cv2.cvtColor(self.current_frame, cv2.cv.CV_RGB2GRAY)
+        reduced_image = cv2.resize(frame_gray, (0,0), fx=1.0/self.downscale_factor, fy=1.0 / self.downscale_factor)
         for k in range(len(self.trackers)):
             # Previous marker location is unknown, search in the entire image.
-            self.current_frame = self.trackers[k].locate_marker(frame_gray)
+            self.current_frame = self.trackers[k].locate_marker(reduced_image)
             self.old_locations[k] = self.trackers[k].pose
+            self.old_locations[k].scale_position(self.downscale_factor)
 
     def draw_detected_markers(self):
         for k in range(len(self.trackers)):
@@ -182,7 +185,7 @@ def main():
     if PublishToROS:
         ros_publisher = RosPublisher(list_of_markers_to_find)
 
-    cd = CameraDriver(list_of_markers_to_find, default_kernel_size=25)  # Best in robolab.
+    cd = CameraDriver(list_of_markers_to_find, default_kernel_size=55, scaling_parameter=1000, downscale_factor=2)  # Best in robolab.
     # cd = ImageDriver(list_of_markers_to_find, defaultKernelSize = 21)
     t0 = time()
 
