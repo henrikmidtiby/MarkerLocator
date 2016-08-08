@@ -123,7 +123,7 @@ class MarkerTracker:
             mean_difference = bright_mean - dark_mean
             normalised_mean_difference = mean_difference / (0.5*bright_std + 0.5*dark_std)
             # Ugly hack for translating the normalised_mean_differences to the range [0, 1]
-            temp_value_for_quality = 1 - 1/(1 + math.exp(0.75*(-7-normalised_mean_difference)))
+            temp_value_for_quality = 1 - 1/(1 + math.exp(0.75*(-7+normalised_mean_difference)))
             self.quality = temp_value_for_quality
         except Exception as e:
             print "error"
@@ -145,7 +145,7 @@ class MarkerTracker:
 
         signed_mask = 1 - 2 * (t3 & t4)
         adjusted_kernel = self.kernelComplex * np.power(phase, self.order) * signed_mask
-        bright_regions = (adjusted_kernel.real > self.threshold).astype(np.uint8)
-        dark_regions = (adjusted_kernel.real < -self.threshold).astype(np.uint8)
+        bright_regions = (adjusted_kernel.real < -self.threshold).astype(np.uint8)
+        dark_regions = (adjusted_kernel.real > self.threshold).astype(np.uint8)
 
         return bright_regions, dark_regions
