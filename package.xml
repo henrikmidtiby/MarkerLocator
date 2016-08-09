@@ -1,0 +1,18 @@
+<?xml version="1.0"?>
+<package>
+  <name>markerlocator</name>
+  <version>0.0.0</version>
+  <description>The MarkerLocator package</description>
+
+  <maintainer email="henrikmidtiby@gmail.com">Henrik Skov Midtiby</maintainer>
+  <url type="website">https://github.com/henrikmidtiby/MarkerLocator</url>
+  <license>BSD 3-Clause</license>
+
+  <buildtool_depend>catkin</buildtool_depend>
+  <build_depend>msgs</build_depend>
+  <build_depend>roscpp</build_depend>
+  <build_depend>rospy</build_depend>
+  <run_depend>msgs</run_depend>
+  <run_depend>roscpp</run_depend>
+  <run_depend>rospy</run_depend>
+</package>
