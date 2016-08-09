@@ -11,17 +11,17 @@ the output printed or broadcasted as ROS messaged.
 CMakeLists.txt             ROS/CATKIN makelist file
 fmMake.txt                 Make file related to FroboMind http://frobomind.org
 MarkerLocator.py           The main file
-MarkerPose.py
-MarkerTracker.py
-matlab/
-msg/
+MarkerPose.py              Python data structure for detected markers
+MarkerTracker.py           Python class for detecting markers
+matlab/                    Various matlab files used during development of the tracker
+msg/                       Ros message definitions
 package.xml                ROS/CATKIN Package file
-patterns/
-performancetesting/
-PerspectiveTransform.py
+patterns/                  Contains latex code for generating markers
+performancetesting/        Script for estimating the marker location accuracy
+PerspectiveTransform.py    Class for making perspective transformations
 readme.txt                 This file
 setup.py                   ROS/CATKIN Python setup file
-TrackerInWindowMode.py
+TrackerInWindowMode.py     Windowed tracker that is faster but doesn't handle entering and leaving markers well
 
 ** ROS **
 To run the MarkerLocator.py script as a ROS node you first need to make the

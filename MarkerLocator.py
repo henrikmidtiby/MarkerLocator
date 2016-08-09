@@ -20,9 +20,9 @@ from MarkerTracker import MarkerTracker
 # parameters
 print_debug_messages = False
 show_image = True
-list_of_markers_to_find = [5,6]
+list_of_markers_to_find = [5, 6]
 get_images_to_flush_cam_buffer = 5
-publish_to_ros = True
+publish_to_ros = False
 markerpose_ros_topic = '/markerlocator/markerpose'
 
 # global variables
@@ -33,13 +33,15 @@ if publish_to_ros:
     from markerlocator.msg import markerpose
     markerpose_msg = markerpose()
 
+
 # define ctrl-c handler
 def signal_handler(signal, frame):
-	global stop_flag
-	stop_flag = True	
+    global stop_flag
+    stop_flag = True
 
 # install ctrl-c handler
 signal.signal(signal.SIGINT, signal_handler)
+
 
 def set_camera_focus():
     # Disable autofocus
@@ -59,10 +61,10 @@ class CameraDriver:
     images to a different class.
     """
 
-    def __init__(self, marker_orders=[6], default_kernel_size=21, scaling_parameter=2500, downscale_factor = 1):
+    def __init__(self, marker_orders=[6], default_kernel_size=21, scaling_parameter=2500, downscale_factor=1):
         # Initialize camera driver.
         # Open output window.
-        if show_image == True:
+        if show_image is True:
             cv2.namedWindow('filterdemo', cv2.cv.CV_WINDOW_AUTOSIZE)
 
         # Select the camera where the images should be grabbed from.
@@ -99,7 +101,7 @@ class CameraDriver:
         self.processed_frame = self.current_frame
         # Locate all markers in image.
         frame_gray = cv2.cvtColor(self.current_frame, cv2.cv.CV_RGB2GRAY)
-        reduced_image = cv2.resize(frame_gray, (0,0), fx=1.0/self.downscale_factor, fy=1.0 / self.downscale_factor)
+        reduced_image = cv2.resize(frame_gray, (0, 0), fx=1.0/self.downscale_factor, fy=1.0 / self.downscale_factor)
         for k in range(len(self.trackers)):
             # Previous marker location is unknown, search in the entire image.
             self.current_frame = self.trackers[k].locate_marker(reduced_image)
@@ -121,7 +123,7 @@ class CameraDriver:
             cv2.line(self.processed_frame, (xm, ym), (xm2, ym2), (255, 0, 0), 2)
 
     def show_processed_frame(self):
-        if show_image == True:
+        if show_image is True:
             cv2.imshow('filterdemo', self.processed_frame)
 
     def reset_all_locations(self):
@@ -130,7 +132,7 @@ class CameraDriver:
             self.old_locations[k] = MarkerPose(None, None, None, None, None)
 
     def handle_keyboard_events(self):
-        if show_image == True:
+        if show_image is True:
             # Listen for keyboard events and take relevant actions.
             key = cv2.waitKey(100)
             # Discard higher order bit, http://permalink.gmane.org/gmane.comp.lib.opencv.devel/410
@@ -151,46 +153,12 @@ class CameraDriver:
         return self.old_locations
 
 
-class ImageDriver(CameraDriver):
-    """
-    Purpose: Same as cameraDriver, but for single image
-    """
-
-    def __init__(self, marker_orders=[7, 8], default_kernel_size=21, scaling_parameter=2500):
-
-        # Storage for image processing.
-        self.current_frame = None
-        self.processed_frame = None
-        self.running = True
-
-        # Storage for trackers.
-        self.trackers = []
-        self.old_locations = []
-
-        # Initialize trackers.
-        for markerOrder in marker_orders:
-            temp = ImageAnalyzer(downscale_factor=1)
-            temp.add_marker_to_track(markerOrder, default_kernel_size, scaling_parameter)
-            self.trackers.append(temp)
-            self.old_locations.append(MarkerPose(None, None, None, None))
-
-        self.cnt = 0
-        self.defaultOrientation = 0
-
-	
-    def get_image(self):
-        # Get image from camera.
-        self.current_frame = cv2.imread('/home/henrik/Dropbox/Camera Uploads/2015-11-12 10.06.20.jpg')
-        if not isinstance(self.current_frame, (np.ndarray, np.generic)):
-            raise TypeError('Your input type is not a numpy array')
-
-
 class RosPublisher:
     def __init__(self, markers, markerpose_ros_topic):
         # Instantiate ros publisher with information about the markers that
         # will be tracked.
         self.markers = markers
-	self.markerpose_pub = rospy.Publisher(markerpose_ros_topic, markerpose, queue_size=0)
+        self.markerpose_pub = rospy.Publisher(markerpose_ros_topic, markerpose, queue_size=0)
         rospy.init_node('MarkerLocator')
 
     def publish_marker_locations(self, locations):
@@ -207,6 +175,7 @@ class RosPublisher:
             self.markerpose_pub.publish(markerpose_msg)
             j += 1
 
+
 def main():
 
     if publish_to_ros:
@@ -222,9 +191,9 @@ def main():
     perspective_corrector = PerspectiveCorrecter(reference_point_locations_in_image,
                                                  reference_point_locations_in_world_coordinates)
 
-    while cd.running and stop_flag == False:
+    while cd.running and stop_flag is False:
         (t1, t0) = (t0, time())
-        if print_debug_messages == True:
+        if print_debug_messages is True:
             print "time for one iteration: %f" % (t0 - t1)
         cd.get_image()
         cd.process_frame()

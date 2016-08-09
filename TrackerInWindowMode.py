@@ -13,7 +13,7 @@ import sys
 
 
 class TrackerInWindowMode:
-    def __init__(self, order = 7, defaultKernelSize = 21):
+    def __init__(self, order=7, defaultKernelSize=21):
         self.window_width = 100
         self.window_height = 100
         self.frameGray = np.zeros((self.window_height, self.window_width, 1), dtype=np.float32)
@@ -22,8 +22,7 @@ class TrackerInWindowMode:
         self.trackerIsInitialized = False
         self.subImagePosition = None
         self.reducedImage = None
-        pass
-    
+
     def crop_frame(self, frame, last_marker_location_x, last_marker_location_y):
         if not self.trackerIsInitialized:
             self.reducedImage = np.zeros((self.window_height, self.window_width, 3), frame.dtype)
@@ -40,7 +39,9 @@ class TrackerInWindowMode:
             y_corner_pos = frame.shape[0] - self.window_height
         try:
             self.subImagePosition = (x_corner_pos, y_corner_pos, self.window_width, self.window_height)
-            self.reducedImage = frame[self.subImagePosition[1]:self.subImagePosition[1]+self.subImagePosition[3] , self.subImagePosition[0]:self.subImagePosition[0]+self.subImagePosition[2], :]
+            self.reducedImage = frame[self.subImagePosition[1]:self.subImagePosition[1]+self.subImagePosition[3],
+                                      self.subImagePosition[0]:self.subImagePosition[0]+self.subImagePosition[2],
+                                      :]
             self.frameGray = cv2.cvtColor(self.reducedImage, cv2.cv.CV_RGB2GRAY)
         except:
             print("frame: ", frame.dtype)
@@ -68,5 +69,3 @@ class TrackerInWindowMode:
         
     def show_cropped_image(self):
         pass
-
-

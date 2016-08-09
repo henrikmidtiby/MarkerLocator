@@ -7,7 +7,6 @@ Created on Thu Aug 14 13:36:47 2014
     
 import sys
 
-sys.path.append('/opt/ros/hydro/lib/python2.7/dist-packages')
 import numpy as np
 import cv2
 import math
