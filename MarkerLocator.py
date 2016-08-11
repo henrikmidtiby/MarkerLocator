@@ -11,6 +11,7 @@ import signal
 import cv2
 import math
 import numpy as np
+from sensor_msgs.msg import Image
 
 # application imports
 from PerspectiveTransform import PerspectiveCorrecter
@@ -20,18 +21,27 @@ from MarkerTracker import MarkerTracker
 # parameters
 print_debug_messages = False
 show_image = True
-list_of_markers_to_find = [5, 6]
+list_of_markers_to_find = [6,7]
 get_images_to_flush_cam_buffer = 5
-publish_to_ros = False
-markerpose_ros_topic = '/markerlocator/markerpose'
+publish_to_ros = True
+camera_device = 0
 
 # global variables
 stop_flag = False
+ros_publisher = False
 
-if publish_to_ros:
-    import rospy
-    from markerlocator.msg import markerpose
-    markerpose_msg = markerpose()
+def on_new_image(msg):
+    t0 = time()
+    cd.current_frame = bridge.imgmsg_to_cv2(msg, "bgr8")
+    cd.process_frame()
+    cd.draw_detected_markers()
+    cd.show_processed_frame()
+    cd.handle_keyboard_events()
+    y = cd.return_positions()
+    if publish_to_ros:
+        ros_publisher.publish_marker_locations(y)
+    if print_debug_messages is True:
+        print "time for one iteration: %f" % (time() - t0)
 
 
 # define ctrl-c handler
@@ -42,18 +52,16 @@ def signal_handler(signal, frame):
 # install ctrl-c handler
 signal.signal(signal.SIGINT, signal_handler)
 
-
-def set_camera_focus():
+def set_camera_focus(device):
     # Disable autofocus
-    os.system('v4l2-ctl -d 1 -c focus_auto=0')
+    os.system('v4l2-ctl -d device -c focus_auto=0')
 
     # Set focus to a specific value. High values for nearby objects and
     # low values for distant objects.
-    os.system('v4l2-ctl -d 1 -c focus_absolute=0')
+    os.system('v4l2-ctl -d device -c focus_absolute=0')
 
     # sharpness (int)    : min=0 max=255 step=1 default=128 value=128
-    os.system('v4l2-ctl -d 1 -c sharpness=200')
-
+    os.system('v4l2-ctl -d device -c sharpness=200')
 
 class CameraDriver:
     """
@@ -68,8 +76,8 @@ class CameraDriver:
             cv2.namedWindow('filterdemo', cv2.cv.CV_WINDOW_AUTOSIZE)
 
         # Select the camera where the images should be grabbed from.
-        set_camera_focus()
-        self.camera = cv2.VideoCapture(0)
+        set_camera_focus(camera_device)
+        self.camera = cv2.VideoCapture(camera_device)
         self.set_camera_resolution()
 
         # Storage for image processing.
@@ -97,16 +105,18 @@ class CameraDriver:
         for k in range(get_images_to_flush_cam_buffer):
             self.current_frame = self.camera.read()[1]
 
+    def downscale_frame(self):
+        self.current_frame = cv2.resize(self.current_frame, (0, 0), fx=1.0/self.downscale_factor, fy=1.0 / self.downscale_factor)
+
     def process_frame(self):
         self.processed_frame = self.current_frame
-        # Locate all markers in image.
         frame_gray = cv2.cvtColor(self.current_frame, cv2.cv.CV_RGB2GRAY)
-        reduced_image = cv2.resize(frame_gray, (0, 0), fx=1.0/self.downscale_factor, fy=1.0 / self.downscale_factor)
+        # Locate all markers in image.
         for k in range(len(self.trackers)):
             # Previous marker location is unknown, search in the entire image.
-            self.current_frame = self.trackers[k].locate_marker(reduced_image)
+            self.current_frame = self.trackers[k].locate_marker(frame_gray)
             self.old_locations[k] = self.trackers[k].pose
-            self.old_locations[k].scale_position(self.downscale_factor)
+            #self.old_locations[k].scale_position(self.downscale_factor)
 
     def draw_detected_markers(self):
         for k in range(len(self.trackers)):
@@ -152,21 +162,23 @@ class CameraDriver:
         # Return list of all marker locations.
         return self.old_locations
 
-
 class RosPublisher:
-    def __init__(self, markers, markerpose_ros_topic):
+    def __init__(self, markers, markerpose_pub_topic):
         # Instantiate ros publisher with information about the markers that
         # will be tracked.
         self.markers = markers
-        self.markerpose_pub = rospy.Publisher(markerpose_ros_topic, markerpose, queue_size=0)
+        self.markerpose_pub = rospy.Publisher(markerpose_pub_topic, markerpose, queue_size=0)
         rospy.init_node('MarkerLocator')
+        self.perspective_corrector = PerspectiveCorrecter(reference_point_locations_in_image, reference_point_locations_in_world_coordinates)
 
     def publish_marker_locations(self, locations):
         markerpose_msg.header.stamp = rospy.get_rostime()
         j = 0
         for i in self.markers:
-            # print 'x%i %i  y%i %i  o%i %i' % (i, locations[j].x, i, locations[j].y, i, locations[j].theta)
-            # ros function
+            pose_corrected = self.perspective_corrector.convertPose(locations[j])
+            if print_debug_messages == True:
+                print("%8.3f %8.3f %8.3f %8.3f %s" % (pose_corrected.x, pose_corrected.y, pose_corrected.theta, pose_corrected.quality, pose_corrected.order))
+
             markerpose_msg.order = locations[j].order
             markerpose_msg.x = locations[j].x
             markerpose_msg.y = locations[j].y
@@ -175,47 +187,66 @@ class RosPublisher:
             self.markerpose_pub.publish(markerpose_msg)
             j += 1
 
-
-def main():
-
-    if publish_to_ros:
-        ros_publisher = RosPublisher(list_of_markers_to_find, markerpose_ros_topic)
-
-    cd = CameraDriver(list_of_markers_to_find, default_kernel_size=55, scaling_parameter=1000, downscale_factor=2)  # Best in robolab.
-    # cd = ImageDriver(list_of_markers_to_find, defaultKernelSize = 21)
-    t0 = time()
-
-    # Calibration of setup in robolab, so that the coordinates correspond to real world coordinates.
-    reference_point_locations_in_image = [[1328, 340], [874, 346], [856, 756], [1300, 762]]
-    reference_point_locations_in_world_coordinates = [[0, 0], [300, 0], [300, 250], [0, 250]]
-    perspective_corrector = PerspectiveCorrecter(reference_point_locations_in_image,
+# Calibration of setup in robolab, so that the coordinates correspond to real world coordinates.
+reference_point_locations_in_image = [[1328, 340], [874, 346], [856, 756], [1300, 762]]
+reference_point_locations_in_world_coordinates = [[0, 0], [300, 0], [300, 250], [0, 250]]
+perspective_corrector = PerspectiveCorrecter(reference_point_locations_in_image,
                                                  reference_point_locations_in_world_coordinates)
 
+if publish_to_ros:
+    import rospy
+    from cv_bridge import CvBridge, CvBridgeError
+    from markerlocator.msg import markerpose
+    rospy.init_node('MarkerLocator')
+    bridge = CvBridge()
+    markerpose_msg = markerpose()
+    image_downscale_factor = rospy.get_param("/image_downscale_factor", 1.0)
+    show_image = rospy.get_param("~show_image", False)
+    print_debug_messages = rospy.get_param("~print_debug_messages", False)
+    ros_marker_order = rospy.get_param("~marker_order", 0)
+    if ros_marker_order != 0:
+        list_of_markers_to_find = [ros_marker_order]
+    markerimage_sub_topic = rospy.get_param("~markerimage_sub",'/markerlocator/image_raw')
+    markerpose_pub_topic = rospy.get_param("~markerpose_pub",'/markerlocator/markerpose')
+
+    ros_publisher = RosPublisher(list_of_markers_to_find, markerpose_pub_topic)
+    rospy.Subscriber(markerimage_sub_topic, Image, on_new_image)
+
+# instantiate camera driver
+cd = CameraDriver(list_of_markers_to_find, default_kernel_size=55, scaling_parameter=1000, downscale_factor=image_downscale_factor)
+# cd = ImageDriver(list_of_markers_to_find, defaultKernelSize = 21)
+
+
+
+def main():
+    t0 = time()
+
     while cd.running and stop_flag is False:
-        (t1, t0) = (t0, time())
-        if print_debug_messages is True:
-            print "time for one iteration: %f" % (t0 - t1)
-        cd.get_image()
-        cd.process_frame()
-        cd.draw_detected_markers()
-        cd.show_processed_frame()
-        cd.handle_keyboard_events()
-        y = cd.return_positions()
-        if publish_to_ros:
-            ros_publisher.publish_marker_locations(y)
-        else:
-            for k in range(len(y)):
-                try:
-                    pose_corrected = perspective_corrector.convertPose(y[k])
-                    print("%8.3f %8.3f %8.3f %8.3f %s" % (pose_corrected.x,
+        if publish_to_ros == False: 
+            (t1, t0) = (t0, time())
+            if print_debug_messages is True:
+                print "time for one iteration: %f" % (t0 - t1)
+            cd.get_image()
+            cd.downscale_frame()
+            cd.process_frame()
+            cd.draw_detected_markers()
+            cd.show_processed_frame()
+            cd.handle_keyboard_events()
+            y = cd.return_positions()
+            if publish_to_ros:
+                ros_publisher.publish_marker_locations(y)
+            else:
+                for k in range(len(y)):
+                    try:
+                        pose_corrected = perspective_corrector.convertPose(y[k])
+                        print("%8.3f %8.3f %8.3f %8.3f %s" % (pose_corrected.x,
                                                           pose_corrected.y,
                                                           pose_corrected.theta,
                                                           pose_corrected.quality,
                                                           pose_corrected.order))
-                except Exception as e:
-                    print("%s" % e)
+                    except Exception as e:
+                        print("%s" % e)
 
     print("Stopping")
-
 
 main()

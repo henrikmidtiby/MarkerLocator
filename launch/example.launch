@@ -1,0 +1,31 @@
+<!-- MarkerLocator example launch file -->
+
+<launch>
+
+	<!--group ns="MarkerLocator"-->
+		<node pkg="markerlocator" name="markercapture" type="MarkerCaptureROS.py" output="screen">
+			<param name="markerimage_pub" value="/markerlocator/image_raw" />
+			<param name="camera_device" value="0" />
+			<param name="update_rate" value="30" />
+			<param name="skip_images" value="8" />
+			<param name="image_downscale_factor" value="2.0" />
+		</node>
+
+		<node pkg="markerlocator" name="markerlocator_6" type="MarkerLocatorROS.py" output="screen">
+			<param name="markerimage_sub" value="/markerlocator/image_raw" />
+			<param name="markerpose_pub" value="/markerlocator/markerpose_6" />
+			<param name="marker_order" value="6" />
+			<param name="show_image" value="True" />
+			<param name="print_debug_messages" value="False" />
+		</node>
+
+		<node pkg="markerlocator" name="markerlocator_7" type="MarkerLocatorROS.py" output="screen">
+			<param name="markerimage_sub" value="/markerlocator/image_raw" />
+			<param name="markerpose_pub" value="/markerlocator/markerpose_7" />
+			<param name="marker_order" value="7" />
+			<param name="show_image" value="True" />
+			<param name="print_debug_messages" value="False" />
+		</node>
+	<!--/group-->
+</launch>
+
