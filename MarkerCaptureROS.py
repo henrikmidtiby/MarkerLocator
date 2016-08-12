@@ -26,7 +26,7 @@ def webcam_pub():
     camera_height = rospy.get_param("~camera_height", 1080)
     update_rate = rospy.get_param("~update_rate", 30)
     skip_images = rospy.get_param("~skip_images", 5)
-    image_downscale_factor = rospy.get_param("~image_downscale_factor", 1.0)
+    image_downscale_factor = rospy.get_param("/image_downscale_factor", 1.0)
     rate = rospy.Rate(update_rate)
 
     camera_device = rospy.get_param("~camera_device", 0)

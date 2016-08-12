@@ -104,16 +104,21 @@ class marker_locator_node():
 		# read parameters
 		self.show_image = rospy.get_param("~show_image", False)
 		self.print_debug_messages = rospy.get_param("~print_debug_messages", False)
+		down_scale_factor = rospy.get_param("/image_downscale_factor", 1.0)
 		self.marker_order = rospy.get_param("~marker_order", 0)
-		marker_size = rospy.get_param("~marker_size", 0)
+		marker_size = rospy.get_param("~marker_size", 0) / down_scale_factor
 		calib_a_wld = [rospy.get_param("/calibrate_a_world_x", 0), rospy.get_param("/calibrate_a_world_y", 0)]
-		calib_a_img = [rospy.get_param("/calibrate_a_image_x", 0), rospy.get_param("/calibrate_a_image_y", 0)]
+		calib_a_img = [rospy.get_param("/calibrate_a_image_x", 0) / down_scale_factor,
+					   rospy.get_param("/calibrate_a_image_y", 0) / down_scale_factor]
 		calib_b_wld = [rospy.get_param("/calibrate_b_world_x", 0), rospy.get_param("/calibrate_b_world_y", 0)]
-		calib_b_img = [rospy.get_param("/calibrate_b_image_x", 0), rospy.get_param("/calibrate_b_image_y", 0)]
+		calib_b_img = [rospy.get_param("/calibrate_b_image_x", 0) / down_scale_factor,
+					   rospy.get_param("/calibrate_b_image_y", 0) / down_scale_factor]
 		calib_c_wld = [rospy.get_param("/calibrate_c_world_x", 0), rospy.get_param("/calibrate_c_world_y", 0)]
-		calib_c_img = [rospy.get_param("/calibrate_c_image_x", 0), rospy.get_param("/calibrate_c_image_y", 0)]
+		calib_c_img = [rospy.get_param("/calibrate_c_image_x", 0) / down_scale_factor,
+					   rospy.get_param("/calibrate_c_image_y", 0) / down_scale_factor]
 		calib_d_wld = [rospy.get_param("/calibrate_d_world_x", 0), rospy.get_param("/calibrate_d_world_y", 0)]
-		calib_d_img = [rospy.get_param("/calibrate_d_image_x", 0), rospy.get_param("/calibrate_d_image_y", 0)]
+		calib_d_img = [rospy.get_param("/calibrate_d_image_x", 0) / down_scale_factor,
+					   rospy.get_param("/calibrate_d_image_y", 0) / down_scale_factor]
 
 		# static parameters
 		scaling_parameter = 1000 # only for (debug) plotting purposes
