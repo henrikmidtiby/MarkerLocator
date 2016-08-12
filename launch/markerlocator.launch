@@ -2,25 +2,27 @@
 
 <launch>
 	<!-- perspective correction calibration points -->
+	<!-- image coordinates in pixels -->
+	<!-- world coordinates in meter -->
 	<param name="calibrate_a_world_x" value="0.0" />
 	<param name="calibrate_a_world_y" value="0.0" />
-	<param name="calibrate_a_image_x" value="0.0" />
-	<param name="calibrate_a_image_y" value="0.0" />
+	<param name="calibrate_a_image_x" value="606.0" />
+	<param name="calibrate_a_image_y" value="922.0" />
 
-	<param name="calibrate_b_world_x" value="0.0" />
-	<param name="calibrate_b_world_y" value="0.0" />
-	<param name="calibrate_b_image_x" value="0.0" />
-	<param name="calibrate_b_image_y" value="0.0" />
+	<param name="calibrate_b_world_x" value="-0.015" />
+	<param name="calibrate_b_world_y" value="1.800" />
+	<param name="calibrate_b_image_x" value="646.0" />
+	<param name="calibrate_b_image_y" value="198.0" />
 
-	<param name="calibrate_c_world_x" value="0.0" />
-	<param name="calibrate_c_world_y" value="0.0" />
-	<param name="calibrate_c_image_x" value="0.0" />
-	<param name="calibrate_c_image_y" value="0.0" />
+	<param name="calibrate_c_world_x" value="2.425" />
+	<param name="calibrate_c_world_y" value="1.950" />
+	<param name="calibrate_c_image_x" value="1591.0" />
+	<param name="calibrate_c_image_y" value="242.0" />
 
-	<param name="calibrate_d_world_x" value="0.0" />
-	<param name="calibrate_d_world_y" value="0.0" />
-	<param name="calibrate_d_image_x" value="0.0" />
-	<param name="calibrate_d_image_y" value="0.0" />
+	<param name="calibrate_d_world_x" value="2.520" />
+	<param name="calibrate_d_world_y" value="0.545" />
+	<param name="calibrate_d_image_x" value="1619.0" />
+	<param name="calibrate_d_image_y" value="813.0" />
 
 	<!--group ns="MarkerLocator"-->
 		<!-- captures images from the camera -->
