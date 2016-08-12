@@ -68,8 +68,7 @@ class CameraDriver:
 
 	def reset_location(self):
 		# Reset all markers locations, forcing a full search on the next iteration.
-		for k in range(len(self.trackers)):
-			self.location = MarkerPose(None, None, None, None, None)
+		self.location = MarkerPose(None, None, None, None, None)
 
 	def handle_keyboard_events(self):
 		# Listen for keyboard events and take relevant actions.
