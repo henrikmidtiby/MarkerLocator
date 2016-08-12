@@ -1,0 +1,56 @@
+<!-- MarkerLocator example launch file -->
+
+<launch>
+	<!-- perspective correction calibration points -->
+	<param name="calibrate_a_world_x" value="0.0" />
+	<param name="calibrate_a_world_y" value="0.0" />
+	<param name="calibrate_a_image_x" value="0.0" />
+	<param name="calibrate_a_image_y" value="0.0" />
+
+	<param name="calibrate_b_world_x" value="0.0" />
+	<param name="calibrate_b_world_y" value="0.0" />
+	<param name="calibrate_b_image_x" value="0.0" />
+	<param name="calibrate_b_image_y" value="0.0" />
+
+	<param name="calibrate_c_world_x" value="0.0" />
+	<param name="calibrate_c_world_y" value="0.0" />
+	<param name="calibrate_c_image_x" value="0.0" />
+	<param name="calibrate_c_image_y" value="0.0" />
+
+	<param name="calibrate_d_world_x" value="0.0" />
+	<param name="calibrate_d_world_y" value="0.0" />
+	<param name="calibrate_d_image_x" value="0.0" />
+	<param name="calibrate_d_image_y" value="0.0" />
+
+	<!--group ns="MarkerLocator"-->
+		<!-- captures images from the camera -->
+		<node pkg="markerlocator" name="markercapture" type="MarkerCaptureROS.py" output="screen">
+			<param name="markerimage_pub" value="/markerlocator/image_raw" />
+			<param name="camera_device" value="0" />
+			<param name="update_rate" value="30" /> <!-- Hz -->
+			<param name="skip_images" value="8" /> <!-- images to skip for each published image-->
+			<param name="image_downscale_factor" value="2.0" />
+		</node>
+
+		<!-- locate a marker of order 6 -->
+		<node pkg="markerlocator" name="markerlocator_6" type="MarkerLocatorROS.py" output="screen">
+			<param name="markerimage_sub" value="/markerlocator/image_raw" />
+			<param name="markerpose_pub" value="/markerlocator/markerpose_6" />
+			<param name="marker_order" value="6" />
+			<param name="marker_size" value="14" /> <!-- pixels -->
+			<param name="show_image" value="True" />
+			<param name="print_debug_messages" value="True" />
+		</node>
+
+		<!-- locate a marker of order 7 -->
+		<node pkg="markerlocator" name="markerlocator_7" type="MarkerLocatorROS.py" output="screen">
+			<param name="markerimage_sub" value="/markerlocator/image_raw" />
+			<param name="markerpose_pub" value="/markerlocator/markerpose_7" />
+			<param name="marker_order" value="7" />
+			<param name="marker_size" value="14" /> <!-- pixels -->
+			<param name="show_image" value="True" />
+			<param name="print_debug_messages" value="True" />
+		</node>
+	<!--/group-->
+</launch>
+

@@ -31,7 +31,7 @@ def signal_handler(signal, frame):
 signal.signal(signal.SIGINT, signal_handler)
 
 class CameraDriver:
-	def __init__(self, marker_order=6, default_kernel_size=21, scaling_parameter=2500):
+	def __init__(self, marker_order, marker_size, scaling_parameter):
 
 		# Storage for image processing.
 		self.current_frame = None
@@ -39,7 +39,7 @@ class CameraDriver:
 		self.running = True
 
 		# Initialize trackers.
-		self.tracker = MarkerTracker(marker_order, default_kernel_size, scaling_parameter)
+		self.tracker = MarkerTracker(marker_order, marker_size, scaling_parameter)
 		self.location = MarkerPose(None, None, None, None, None)
 
 	def open_image_window(self):
@@ -105,14 +105,29 @@ class marker_locator_node():
 		self.show_image = rospy.get_param("~show_image", False)
 		self.print_debug_messages = rospy.get_param("~print_debug_messages", False)
 		self.marker_order = rospy.get_param("~marker_order", 0)
+		marker_size = rospy.get_param("~marker_size", 0)
+		calib_a_wld = [rospy.get_param("/calibrate_a_world_x", 0), rospy.get_param("/calibrate_a_world_y", 0)]
+		calib_a_img = [rospy.get_param("/calibrate_a_image_x", 0), rospy.get_param("/calibrate_a_image_y", 0)]
+		calib_b_wld = [rospy.get_param("/calibrate_b_world_x", 0), rospy.get_param("/calibrate_b_world_y", 0)]
+		calib_b_img = [rospy.get_param("/calibrate_b_image_x", 0), rospy.get_param("/calibrate_b_image_y", 0)]
+		calib_c_wld = [rospy.get_param("/calibrate_c_world_x", 0), rospy.get_param("/calibrate_c_world_y", 0)]
+		calib_c_img = [rospy.get_param("/calibrate_c_image_x", 0), rospy.get_param("/calibrate_c_image_y", 0)]
+		calib_d_wld = [rospy.get_param("/calibrate_d_world_x", 0), rospy.get_param("/calibrate_d_world_y", 0)]
+		calib_d_img = [rospy.get_param("/calibrate_d_image_x", 0), rospy.get_param("/calibrate_d_image_y", 0)]
+
+		# static parameters
+		scaling_parameter = 1000
 
 		# Calibration of setup, so that the coordinates correspond to real world coordinates.
-		reference_point_locations_in_image = [[1328, 340], [874, 346], [856, 756], [1300, 762]]
-		reference_point_locations_in_world_coordinates = [[0, 0], [300, 0], [300, 250], [0, 250]]
-		self.perspective_corrector = PerspectiveCorrecter(reference_point_locations_in_image, reference_point_locations_in_world_coordinates)
+		calib_pts_image = [calib_a_img, calib_b_img, calib_c_img, calib_d_img]
+		calib_pts_world = [calib_a_wld, calib_b_wld, calib_c_wld, calib_d_wld]
+		self.perspective_corrector = PerspectiveCorrecter(calib_pts_image, calib_pts_world)
+		if self.print_debug_messages:
+			print 'Calibration points image:', calib_pts_image
+			print 'Calibration points world:', calib_pts_world
 
 		# instantiate camera driver
-		self.cd = CameraDriver(self.marker_order, default_kernel_size=14, scaling_parameter=1000)
+		self.cd = CameraDriver(self.marker_order, marker_size, scaling_parameter)
 		if self.show_image:
 			self.cd.open_image_window()
 
@@ -149,11 +164,9 @@ class marker_locator_node():
 			print("Marker: %s x: %8.3f y:%8.3f theta: %8.3f quality: %8.3f interval: %.3f" % (pose_corrected.order, pose_corrected.x, pose_corrected.y, pose_corrected.theta, pose_corrected.quality, (time() - self.time_prev_image)))
 			self.time_prev_image = time()
 
-
 	def updater(self):
 		while not rospy.is_shutdown():
 			self.rate.sleep()
-
 
 if __name__ == '__main__':
 	try:
