@@ -47,7 +47,8 @@ class CameraDriver:
 
 	def process_frame(self):
 		self.processed_frame = self.current_frame
-		frame_gray = cv2.cvtColor(self.current_frame, cv2.cv.CV_RGB2GRAY)
+		frame_gray = self.current_frame
+		self.processed_frame = cv2.cvtColor(self.current_frame, cv2.cv.CV_GRAY2BGR)
 		
 		# Previous marker location is unknown, search in the entire image.
 		self.current_frame = self.tracker.locate_marker(frame_gray)
@@ -147,7 +148,7 @@ class marker_locator_node():
 		self.updater()  
 
 	def on_new_image(self, msg):
-		self.cd.current_frame = self.bridge.imgmsg_to_cv2(msg, "bgr8")
+		self.cd.current_frame = self.bridge.imgmsg_to_cv2(msg, "8UC1")
 		self.cd.process_frame()
 		if self.show_image:
 			self.cd.show_processed_frame()

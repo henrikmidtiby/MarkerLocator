@@ -49,7 +49,8 @@ def webcam_pub():
         if count % skip_images == 0:
             time_captured = rospy.Time.now()
             frame = cv2.resize(frame, (0, 0), fx=1.0/image_downscale_factor, fy=1.0/image_downscale_factor)
-            msg = bridge.cv2_to_imgmsg(frame, encoding="bgr8")
+            frame_gray = cv2.cvtColor(frame, cv2.cv.CV_RGB2GRAY)
+            msg = bridge.cv2_to_imgmsg(frame_gray, encoding="8UC1")
             msg.header.stamp = time_captured
             pub.publish(msg)
         count += 1
