@@ -22,6 +22,8 @@ def webcam_pub():
     rospy.init_node('webcam_pub', anonymous=True)
     markerimage_pub_topic = rospy.get_param("~markerimage_pub",'/markerlocator/image_raw')
     pub = rospy.Publisher(markerimage_pub_topic, Image, queue_size=0)
+    camera_width = rospy.get_param("~camera_width", 1920)
+    camera_height = rospy.get_param("~camera_height", 1080)
     update_rate = rospy.get_param("~update_rate", 30)
     skip_images = rospy.get_param("~skip_images", 5)
     image_downscale_factor = rospy.get_param("~image_downscale_factor", 1.0)
@@ -32,8 +34,8 @@ def webcam_pub():
     cam = cv2.VideoCapture(camera_device)
 
     # define camera
-    cam.set(cv2.cv.CV_CAP_PROP_FRAME_WIDTH, 1920)
-    cam.set(cv2.cv.CV_CAP_PROP_FRAME_HEIGHT, 1080)
+    cam.set(cv2.cv.CV_CAP_PROP_FRAME_WIDTH, camera_width)
+    cam.set(cv2.cv.CV_CAP_PROP_FRAME_HEIGHT, camera_height)
 
     bridge = CvBridge()
 
@@ -45,8 +47,10 @@ def webcam_pub():
     while not rospy.is_shutdown():
         (grabbed, frame) = cam.read()
         if count % skip_images == 0:
+            time_captured = rospy.Time.now()
             frame = cv2.resize(frame, (0, 0), fx=1.0/image_downscale_factor, fy=1.0/image_downscale_factor)
             msg = bridge.cv2_to_imgmsg(frame, encoding="bgr8")
+            msg.header.stamp = time_captured
             pub.publish(msg)
         count += 1
         rate.sleep()

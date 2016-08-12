@@ -116,7 +116,7 @@ class marker_locator_node():
 		calib_d_img = [rospy.get_param("/calibrate_d_image_x", 0), rospy.get_param("/calibrate_d_image_y", 0)]
 
 		# static parameters
-		scaling_parameter = 1000
+		scaling_parameter = 1000 # only for (debug) plotting purposes
 
 		# Calibration of setup, so that the coordinates correspond to real world coordinates.
 		calib_pts_image = [calib_a_img, calib_b_img, calib_c_img, calib_d_img]
@@ -157,11 +157,12 @@ class marker_locator_node():
 		self.markerpose_msg.y = pose_corrected.y
 		self.markerpose_msg.theta = pose_corrected.theta
 		self.markerpose_msg.quality = pose_corrected.quality
+		self.markerpose_msg.timestamp = msg.header.stamp
 		self.markerpose_pub.publish(self.markerpose_msg)
 
 		# print debug info
 		if self.print_debug_messages == True:
-			print("Marker: %s x: %8.3f y:%8.3f theta: %8.3f quality: %8.3f interval: %.3f" % (pose_corrected.order, pose_corrected.x, pose_corrected.y, pose_corrected.theta, pose_corrected.quality, (time() - self.time_prev_image)))
+			print("Time: %.3f  Marker: %s  x: %8.3f  y:%8.3f  theta: %8.3f  quality: %8.3f  interval: %.3f" % (msg.header.stamp.to_sec(), pose_corrected.order, pose_corrected.x, pose_corrected.y, pose_corrected.theta, pose_corrected.quality, (time() - self.time_prev_image)))
 			self.time_prev_image = time()
 
 	def updater(self):

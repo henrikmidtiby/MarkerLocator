@@ -26,7 +26,9 @@
 		<!-- captures images from the camera -->
 		<node pkg="markerlocator" name="markercapture" type="MarkerCaptureROS.py" output="screen">
 			<param name="markerimage_pub" value="/markerlocator/image_raw" />
-			<param name="camera_device" value="0" />
+			<param name="camera_device" value="0" /> <!-- linux device number -->
+			<param name="camera_width" value="1920" /> <!-- pixels -->
+			<param name="camera_height" value="1080" /> <!-- pixels -->
 			<param name="update_rate" value="30" /> <!-- Hz -->
 			<param name="skip_images" value="8" /> <!-- images to skip for each published image-->
 			<param name="image_downscale_factor" value="2.0" />
