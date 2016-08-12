@@ -9,14 +9,14 @@ import os
 
 def set_camera_focus(device):
     # Disable autofocus
-    os.system('v4l2-ctl -d device -c focus_auto=0')
+    os.system('v4l2-ctl -d %d -c focus_auto=0' % device)
 
     # Set focus to a specific value. High values for nearby objects and
     # low values for distant objects.
-    os.system('v4l2-ctl -d device -c focus_absolute=0')
+    os.system('v4l2-ctl -d %d -c focus_absolute=0' % device)
 
     # sharpness (int)    : min=0 max=255 step=1 default=128 value=128
-    os.system('v4l2-ctl -d device -c sharpness=200')
+    os.system('v4l2-ctl -d %d -c sharpness=200' % device)
 
 def webcam_pub():
     rospy.init_node('webcam_pub', anonymous=True)

@@ -1,11 +1,14 @@
 
 
 
+** Requirements **
+
+sudo apt-get install v4l-utils
+
 ** Parameters **
 In the file MarkerLocator.py you will find a few parameters.You need to define
 the list of markers which you want tracked, and you need to define if you want
 the output printed or broadcasted as ROS messaged.
-
 
 ** Files **
 CMakeLists.txt             ROS/CATKIN makelist file

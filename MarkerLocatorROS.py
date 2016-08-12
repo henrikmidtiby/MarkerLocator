@@ -112,7 +112,7 @@ class marker_locator_node():
 		self.perspective_corrector = PerspectiveCorrecter(reference_point_locations_in_image, reference_point_locations_in_world_coordinates)
 
 		# instantiate camera driver
-		self.cd = CameraDriver(self.marker_order, default_kernel_size=55, scaling_parameter=1000)
+		self.cd = CameraDriver(self.marker_order, default_kernel_size=14, scaling_parameter=1000)
 		if self.show_image:
 			self.cd.open_image_window()
 
@@ -146,7 +146,7 @@ class marker_locator_node():
 
 		# print debug info
 		if self.print_debug_messages == True:
-			print("%s %8.3f %8.3f %8.3f %8.3f %.3f" % (pose_corrected.order, pose_corrected.x, pose_corrected.y, pose_corrected.theta, pose_corrected.quality, (time() - self.time_prev_image)))
+			print("Marker: %s x: %8.3f y:%8.3f theta: %8.3f quality: %8.3f interval: %.3f" % (pose_corrected.order, pose_corrected.x, pose_corrected.y, pose_corrected.theta, pose_corrected.quality, (time() - self.time_prev_image)))
 			self.time_prev_image = time()
 
 

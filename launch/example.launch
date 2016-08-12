@@ -16,7 +16,7 @@
 			<param name="markerpose_pub" value="/markerlocator/markerpose_6" />
 			<param name="marker_order" value="6" />
 			<param name="show_image" value="True" />
-			<param name="print_debug_messages" value="False" />
+			<param name="print_debug_messages" value="True" />
 		</node>
 
 		<node pkg="markerlocator" name="markerlocator_7" type="MarkerLocatorROS.py" output="screen">
@@ -24,7 +24,7 @@
 			<param name="markerpose_pub" value="/markerlocator/markerpose_7" />
 			<param name="marker_order" value="7" />
 			<param name="show_image" value="True" />
-			<param name="print_debug_messages" value="False" />
+			<param name="print_debug_messages" value="True" />
 		</node>
 	<!--/group-->
 </launch>
