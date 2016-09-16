@@ -27,6 +27,7 @@ class MarkerTracker:
         self.frame_imag = None
         self.last_marker_location = None
         self.orientation = None
+        self.track_marker_with_missing_black_leg = True
 
         # Create kernel used to remove arm in quality-measure
         (kernel_remove_arm_real, kernel_remove_arm_imag) = self.generate_symmetry_detector_kernel(1, self.kernel_size)
@@ -144,7 +145,9 @@ class MarkerTracker:
         t4 = np.angle(self.KernelRemoveArmComplex * phase) > -angle_threshold
 
         signed_mask = 1 - 2 * (t3 & t4)
-        adjusted_kernel = self.kernelComplex * np.power(phase, self.order) * signed_mask
+        adjusted_kernel = self.kernelComplex * np.power(phase, self.order)
+        if self.track_marker_with_missing_black_leg:
+            adjusted_kernel = adjusted_kernel * signed_mask
         bright_regions = (adjusted_kernel.real < -self.threshold).astype(np.uint8)
         dark_regions = (adjusted_kernel.real > self.threshold).astype(np.uint8)
 
