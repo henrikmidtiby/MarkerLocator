@@ -1,2 +1,9 @@
 *.pyc
 .idea/
+*.swp
+documentation/markertracker.aux
+documentation/markertracker.log
+documentation/markertracker.pdf
+documentation/markertracker.synctex.gz
+patterns/patterns.pdf
+patterns/robolabmarkers.pdf
