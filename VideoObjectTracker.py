@@ -114,9 +114,9 @@ track_marker_in_video(args.input_video_filename, args.output_filename, args.mark
                       args.marker_is_oriented)
 
 # Some example command line
-# python videoObjectTracker.py input/2015-11-12\ 08.58.29.mp4 --order 2 --kernelsize=151
-# python videoObjectTracker.py input/2015-11-12\ 07.58.26.mp4 --order 6 --kernelsize 101
-# python videoObjectTracker.py input/2015-11-12\ 09.06.21.mp4 --order 4 --kernelsize 101
-# python videoObjectTracker.py input/2015-11-11\ 12.50.19.mp4 --order 6 --kernelsize=101 --trackorientation
+# python VideoObjectTracker.py input/2015-11-12\ 08.58.29.mp4 --order 2 --kernelsize=151
+# python VideoObjectTracker.py input/2015-11-12\ 07.58.26.mp4 --order 6 --kernelsize 101
+# python VideoObjectTracker.py input/2015-11-12\ 09.06.21.mp4 --order 4 --kernelsize 101
+# python VideoObjectTracker.py input/2015-11-11\ 12.50.19.mp4 --order 6 --kernelsize=101 --trackorientation
 #
 #
