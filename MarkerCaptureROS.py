@@ -34,6 +34,8 @@ def webcam_pub():
     cam = cv2.VideoCapture(camera_device)
 
     # define camera
+    # cam.set(cv2.CAP_PROP_FRAME_WIDTH, camera_width)
+    # cam.set(cv2.CAP_PROP_FRAME_HEIGHT, camera_height)
     cam.set(cv2.cv.CV_CAP_PROP_FRAME_WIDTH, camera_width)
     cam.set(cv2.cv.CV_CAP_PROP_FRAME_HEIGHT, camera_height)
 
@@ -49,6 +51,7 @@ def webcam_pub():
         if count % skip_images == 0:
             time_captured = rospy.Time.now()
             frame = cv2.resize(frame, (0, 0), fx=1.0/image_downscale_factor, fy=1.0/image_downscale_factor)
+            # frame_gray = cv2.cvtColor(frame, cv2.COLOR_RGB2GRAY)
             frame_gray = cv2.cvtColor(frame, cv2.cv.CV_RGB2GRAY)
             msg = bridge.cv2_to_imgmsg(frame_gray, encoding="8UC1")
             msg.header.stamp = time_captured
