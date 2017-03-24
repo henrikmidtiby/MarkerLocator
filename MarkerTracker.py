@@ -127,8 +127,8 @@ class MarkerTracker:
             temp_value_for_quality = 1 - 1/(1 + math.exp(0.75*(-7+normalised_mean_difference)))
             self.quality = temp_value_for_quality
         except Exception as e:
-            print "error"
-            print e
+            print("error")
+            print(e)
             self.quality = 0.0
             return
 
@@ -147,7 +147,7 @@ class MarkerTracker:
         signed_mask = 1 - 2 * (t3 & t4)
         adjusted_kernel = self.kernelComplex * np.power(phase, self.order)
         if self.track_marker_with_missing_black_leg:
-            adjusted_kernel = adjusted_kernel * signed_mask
+            adjusted_kernel *= signed_mask
         bright_regions = (adjusted_kernel.real < -self.threshold).astype(np.uint8)
         dark_regions = (adjusted_kernel.real > self.threshold).astype(np.uint8)
 

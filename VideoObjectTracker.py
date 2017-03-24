@@ -53,7 +53,7 @@ def track_marker_in_video(video_file_to_analyze_filename, output_filename_input,
 
         # Mark the center of the marker
         cv2.circle(frame, (marker_pose.x, marker_pose.y), 20, (255, 0, 255), -1)
-        cv2.circle(frame, (marker_pose.x, marker_pose.y), size_of_kernel_input / 2, (255, 0, 255), 1)
+        cv2.circle(frame, (marker_pose.x, marker_pose.y), int(size_of_kernel_input / 2), (255, 0, 255), 1)
 
         if track_orientation:
             # Mark the orientation of the detected marker
