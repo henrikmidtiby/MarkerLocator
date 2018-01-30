@@ -47,7 +47,7 @@ def main():
     pointLocationsInImage = [[197, 136], [168, 403], [449, 169], [420, 347]]
     realCoordinates = [[0, 0], [0, 4], [6, 0], [6, 4]]
     perspectiveConverter = PerspectiveCorrecter(pointLocationsInImage, realCoordinates)
-    print perspectiveConverter.convert([294, 269])
+    print(perspectiveConverter.convert([294, 269]))
 
     pointLocationsInImage = [[0, 0], [0, 4], [6, 0], [6, 4]]
     realCoordinates = [[0, 0], [0, 4], [6, 0], [6, 4]]

@@ -65,7 +65,7 @@ class CameraDriver:
         # Initialize camera driver.
         # Open output window.
         if show_image is True:
-            cv2.namedWindow('filterdemo', cv2.cv.CV_WINDOW_AUTOSIZE)
+            cv2.namedWindow('filterdemo', cv2.WINDOW_AUTOSIZE)
 
         # Select the camera where the images should be grabbed from.
         set_camera_focus()
@@ -89,8 +89,8 @@ class CameraDriver:
             self.old_locations.append(MarkerPose(None, None, None, None, None))
 
     def set_camera_resolution(self):
-        self.camera.set(cv2.cv.CV_CAP_PROP_FRAME_WIDTH, 1920)
-        self.camera.set(cv2.cv.CV_CAP_PROP_FRAME_HEIGHT, 1080)
+        self.camera.set(cv2.CAP_PROP_FRAME_WIDTH, 1920)
+        self.camera.set(cv2.CAP_PROP_FRAME_HEIGHT, 1080)
 
     def get_image(self):
         # Get image from camera.
@@ -100,7 +100,7 @@ class CameraDriver:
     def process_frame(self):
         self.processed_frame = self.current_frame
         # Locate all markers in image.
-        frame_gray = cv2.cvtColor(self.current_frame, cv2.cv.CV_RGB2GRAY)
+        frame_gray = cv2.cvtColor(self.current_frame, cv2.COLOR_RGB2GRAY)
         reduced_image = cv2.resize(frame_gray, (0, 0), fx=1.0/self.downscale_factor, fy=1.0 / self.downscale_factor)
         for k in range(len(self.trackers)):
             # Previous marker location is unknown, search in the entire image.
@@ -194,7 +194,7 @@ def main():
     while cd.running and stop_flag is False:
         (t1, t0) = (t0, time())
         if print_debug_messages is True:
-            print "time for one iteration: %f" % (t0 - t1)
+            print("time for one iteration: %f" % (t0 - t1))
         cd.get_image()
         cd.process_frame()
         cd.draw_detected_markers()
@@ -206,7 +206,8 @@ def main():
         else:
             for k in range(len(y)):
                 try:
-                    pose_corrected = perspective_corrector.convertPose(y[k])
+                    # pose_corrected = perspective_corrector.convertPose(y[k])
+                    pose_corrected = y[k]
                     print("%8.3f %8.3f %8.3f %8.3f %s" % (pose_corrected.x,
                                                           pose_corrected.y,
                                                           pose_corrected.theta,
