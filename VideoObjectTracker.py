@@ -53,17 +53,30 @@ def track_marker_in_video(video_file_to_analyze_filename, output_filename_input,
 
         # Mark the center of the marker
         line_width_of_circle = 2
-        cv2.circle(frame, (marker_pose.x, marker_pose.y), int(size_of_kernel_input / 2), (255, 0, 255), line_width_of_circle)
+        if marker_pose.quality > 0.5:
+            marker_color = (0, 255, 0)
+        else:
+            marker_color = (255, 0, 255)
+        cv2.circle(frame, (marker_pose.x, marker_pose.y), int(size_of_kernel_input / 2), marker_color, line_width_of_circle)
 
+        dist = 50
+        direction_line_width = 1
         if track_orientation:
             # Mark the orientation of the detected marker
-            dist = 50
             point1 = (marker_pose.x, marker_pose.y)
             point2 = (math.trunc(marker_pose.x + dist * math.cos(marker_pose.theta)),
                       math.trunc(marker_pose.y + dist * math.sin(marker_pose.theta)))
 
-            direction_line_width = 2
-            cv2.line(frame, point1, point2, (255, 0, 255), direction_line_width)
+            cv2.line(frame, point1, point2, marker_color, direction_line_width)
+        else:
+            point1 = (marker_pose.x, marker_pose.y)
+            theta = marker_pose.theta
+            for k in range(order_of_marker_input):
+                theta += 2*math.pi/order_of_marker_input
+                point2 = (math.trunc(marker_pose.x + dist * math.cos(theta)),
+                          math.trunc(marker_pose.y + dist * math.sin(theta)))
+
+                cv2.line(frame, point1, point2, marker_color, direction_line_width)
 
         # Show the annotated image.
         cv2.imshow('frame', frame)
