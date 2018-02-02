@@ -67,6 +67,8 @@ def track_marker_in_video(video_file_to_analyze_filename, output_filename_input,
                                             track_orientation)
 
         # Show the annotated image.
+        norm_image = cv2.normalize(tracker.frame_sum_squared, None, alpha=0, beta=1, norm_type=cv2.NORM_MINMAX, dtype=cv2.CV_32F)
+        cv2.imshow('marker_response', norm_image)
         cv2.imshow('frame', frame)
 
         # Break the look if the key 'q' was pressed.
