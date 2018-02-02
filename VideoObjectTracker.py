@@ -46,10 +46,7 @@ def track_marker_in_video(video_file_to_analyze_filename, output_filename_input,
         marker_pose = tracker.locate_marker(gray_scale_image)
 
         # Show and write to file information about the detected marker.
-        string_to_file = "%3d\t%3d\t%3d\t%.2f\t%.2f\n" % (
-        counter, marker_pose.x, marker_pose.y, marker_pose.theta, marker_pose.quality)
-        print(string_to_file[0:-1])
-        output_file.write(string_to_file)
+        show_and_store_marker_location(counter, marker_pose, output_file)
 
         # Mark the center of the marker
         line_width_of_circle = 2
@@ -87,6 +84,13 @@ def track_marker_in_video(video_file_to_analyze_filename, output_filename_input,
 
     output_file.close()
     return
+
+
+def show_and_store_marker_location(counter, marker_pose, output_file):
+    string_to_file = "%3d\t%3d\t%3d\t%.2f\t%.2f\n" % (
+        counter, marker_pose.x, marker_pose.y, marker_pose.theta, marker_pose.quality)
+    print(string_to_file[0:-1])
+    output_file.write(string_to_file)
 
 
 # Launch the program.
