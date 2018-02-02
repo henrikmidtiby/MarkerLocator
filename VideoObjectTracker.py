@@ -13,7 +13,7 @@ import math
 
 
 def track_marker_in_video(video_file_to_analyze_filename, output_filename_input, order_of_marker_input,
-                          size_of_kernel_input, track_orientation):
+                          size_of_kernel_input, track_orientation, scale_factor):
     # Open video file for reading and output file for writing.
     cap = cv2.VideoCapture()
     cap.open(video_file_to_analyze_filename)
@@ -38,6 +38,8 @@ def track_marker_in_video(video_file_to_analyze_filename, output_filename_input,
         # Halt if reading failed.
         if not ret:
             break
+
+        frame = cv2.resize(frame, (0, 0), fx=1/scale_factor, fy=1/scale_factor)
 
         # Convert image to grayscale.
         gray_scale_image = cv2.cvtColor(frame, cv2.COLOR_BGR2GRAY)
@@ -114,6 +116,9 @@ parser.add_argument('--order', dest='marker_order', default=5,
                     type=int,
                     help='Order of the n-fold marker to track. The order is the number of \'black legs\' '
                          'in the marker. Remember to include the removed leg if using an oriented marker.')
+parser.add_argument('--scalefactor', dest='scale_factor', default=1,
+                    type=int,
+                    help='Size reduction factor.')
 parser.add_argument('--kernelsize', dest='kernelsize', default=51,
                     type=int,
                     help='Size of the kernel that is used to track the marker. This value should be '
@@ -130,7 +135,7 @@ parser.add_argument('--output', dest='output_filename', default='temppositions.t
 args = parser.parse_args()
 
 track_marker_in_video(args.input_video_filename, args.output_filename, args.marker_order, args.kernelsize,
-                      args.marker_is_oriented)
+                      args.marker_is_oriented, args.scale_factor)
 
 # Some example command line
 # python VideoObjectTracker.py input/2015-11-12\ 08.58.29.mp4 --order 2 --kernelsize=151
