@@ -13,7 +13,7 @@ import math
 
 
 def track_marker_in_video(video_file_to_analyze_filename, output_filename_input, order_of_marker_input,
-                          size_of_kernel_input, track_orientation, scale_factor):
+                          size_of_kernel_input, track_orientation, scale_factor, video_output_filename):
     # Open video file for reading and output file for writing.
     cap = cv2.VideoCapture()
     cap.open(video_file_to_analyze_filename)
@@ -41,6 +41,18 @@ def track_marker_in_video(video_file_to_analyze_filename, output_filename_input,
 
         frame = cv2.resize(frame, (0, 0), fx=1/scale_factor, fy=1/scale_factor)
 
+        if counter == 1 and video_output_filename is not None:
+            frames_per_second = 20
+            fourcc = cv2.VideoWriter_fourcc(*'MJPG')
+            shape_of_frame = (frame.shape[1], frame.shape[0])
+            print(shape_of_frame)
+            video_output_file = cv2.VideoWriter(video_output_filename,
+                                                fourcc,
+                                                frames_per_second,
+                                                shape_of_frame,
+                                                isColor=True)
+            print(video_output_file.isOpened())
+
         # Convert image to grayscale.
         gray_scale_image = cv2.cvtColor(frame, cv2.COLOR_BGR2GRAY)
 
@@ -65,8 +77,12 @@ def track_marker_in_video(video_file_to_analyze_filename, output_filename_input,
         if key_value & 0xFF == ord('p'):
             cv2.waitKey(1000000)
 
+        if video_output_filename is not None:
+            video_output_file.write(frame)
 
     output_file.close()
+    if video_output_filename is not None:
+        video_output_file.release()
     return
 
 
@@ -141,11 +157,14 @@ parser.add_argument('--trackorientation', dest='marker_is_oriented', default=Fal
 parser.add_argument('--output', dest='output_filename', default='temppositions.txt',
                     type=str,
                     help='Location of text file in which to store the tracked locations.')
+parser.add_argument('--videooutput', dest='video_output_filename', default=None,
+                    type=str,
+                    help='Location of video file in which to store the analysed wideo.')
 
 args = parser.parse_args()
 
 track_marker_in_video(args.input_video_filename, args.output_filename, args.marker_order, args.kernelsize,
-                      args.marker_is_oriented, args.scale_factor)
+                      args.marker_is_oriented, args.scale_factor, args.video_output_filename)
 
 # Some example command line
 # python VideoObjectTracker.py input/2015-11-12\ 08.58.29.mp4 --order 2 --kernelsize=151
