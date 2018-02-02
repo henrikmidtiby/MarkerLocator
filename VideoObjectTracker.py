@@ -51,31 +51,8 @@ def track_marker_in_video(video_file_to_analyze_filename, output_filename_input,
         show_and_store_marker_location(counter, marker_pose, output_file)
 
         # Mark the center of the marker
-        line_width_of_circle = 2
-        if marker_pose.quality > 0.5:
-            marker_color = (0, 255, 0)
-        else:
-            marker_color = (255, 0, 255)
-        cv2.circle(frame, (marker_pose.x, marker_pose.y), int(size_of_kernel_input / 2), marker_color, line_width_of_circle)
-
-        dist = 50
-        direction_line_width = 1
-        if track_orientation:
-            # Mark the orientation of the detected marker
-            point1 = (marker_pose.x, marker_pose.y)
-            point2 = (math.trunc(marker_pose.x + dist * math.cos(marker_pose.theta)),
-                      math.trunc(marker_pose.y + dist * math.sin(marker_pose.theta)))
-
-            cv2.line(frame, point1, point2, marker_color, direction_line_width)
-        else:
-            point1 = (marker_pose.x, marker_pose.y)
-            theta = marker_pose.theta
-            for k in range(order_of_marker_input):
-                theta += 2*math.pi/order_of_marker_input
-                point2 = (math.trunc(marker_pose.x + dist * math.cos(theta)),
-                          math.trunc(marker_pose.y + dist * math.sin(theta)))
-
-                cv2.line(frame, point1, point2, marker_color, direction_line_width)
+        annotate_frame_with_detected_marker(frame, marker_pose, order_of_marker_input, size_of_kernel_input,
+                                            track_orientation)
 
         # Show the annotated image.
         cv2.imshow('frame', frame)
@@ -98,6 +75,34 @@ def show_and_store_marker_location(counter, marker_pose, output_file):
         counter, marker_pose.x, marker_pose.y, marker_pose.theta, marker_pose.quality)
     print(string_to_file[0:-1])
     output_file.write(string_to_file)
+
+
+def annotate_frame_with_detected_marker(frame, marker_pose, order_of_marker_input, size_of_kernel_input,
+                                        track_orientation):
+    line_width_of_circle = 2
+    if marker_pose.quality > 0.5:
+        marker_color = (0, 255, 0)
+    else:
+        marker_color = (255, 0, 255)
+    cv2.circle(frame, (marker_pose.x, marker_pose.y), int(size_of_kernel_input / 2), marker_color, line_width_of_circle)
+    dist = 50
+    direction_line_width = 1
+    if track_orientation:
+        # Mark the orientation of the detected marker
+        point1 = (marker_pose.x, marker_pose.y)
+        point2 = (math.trunc(marker_pose.x + dist * math.cos(marker_pose.theta)),
+                  math.trunc(marker_pose.y + dist * math.sin(marker_pose.theta)))
+
+        cv2.line(frame, point1, point2, marker_color, direction_line_width)
+    else:
+        point1 = (marker_pose.x, marker_pose.y)
+        theta = marker_pose.theta
+        for k in range(order_of_marker_input):
+            theta += 2 * math.pi / order_of_marker_input
+            point2 = (math.trunc(marker_pose.x + dist * math.cos(theta)),
+                      math.trunc(marker_pose.y + dist * math.sin(theta)))
+
+            cv2.line(frame, point1, point2, marker_color, direction_line_width)
 
 
 # Launch the program.
