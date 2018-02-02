@@ -68,9 +68,9 @@ class MarkerTracker:
         self.frame_imag = cv2.filter2D(self.frame_imag, cv2.CV_32F, self.mat_imag)
         frame_real_squared = cv2.multiply(self.frame_real, self.frame_real, dtype=cv2.CV_32F)
         frame_imag_squared = cv2.multiply(self.frame_imag, self.frame_imag, dtype=cv2.CV_32F)
-        frame_sum_squared = cv2.add(frame_real_squared, frame_imag_squared, dtype=cv2.CV_32F)
+        self.frame_sum_squared = cv2.add(frame_real_squared, frame_imag_squared, dtype=cv2.CV_32F)
 
-        min_val, max_val, min_loc, max_loc = cv2.minMaxLoc(frame_sum_squared)
+        min_val, max_val, min_loc, max_loc = cv2.minMaxLoc(self.frame_sum_squared)
         self.last_marker_location = max_loc
         self.determine_marker_orientation(frame)
         self.determine_marker_quality(frame)
