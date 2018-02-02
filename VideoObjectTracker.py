@@ -81,8 +81,13 @@ def track_marker_in_video(video_file_to_analyze_filename, output_filename_input,
         cv2.imshow('frame', frame)
 
         # Break the look if the key 'q' was pressed.
-        if cv2.waitKey(1) & 0xFF == ord('q'):
+        key_value = cv2.waitKey(10)
+        if key_value & 0xFF == ord('q'):
             break
+        # Wait if 'p' was pressed.
+        if key_value & 0xFF == ord('p'):
+            cv2.waitKey(1000000)
+
 
     output_file.close()
     return
