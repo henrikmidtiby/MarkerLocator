@@ -71,15 +71,33 @@
 \end{tikzpicture}
 
 
+\newpage
+\renewcommand{\archlength}{5cm}
 \begin{tikzpicture}
-\newcommand\order{7}
+\newcommand\order{2}
 		\begin{scope}
 			% Do calculation
 			\pgfmathsetmacro{\steplength}{180 / \order}%
 			\foreach \n in {0, \steplength, ..., 179}{\drawarch{\n}}
 		\end{scope}
-\renewcommand\order{8}
-		\begin{scope}[xshift=6cm]
+\renewcommand\order{3}
+		\begin{scope}[xshift=13cm]
+			% Do calculation
+			\pgfmathsetmacro{\steplength}{180 / \order}%
+			\foreach \n in {0, \steplength, ..., 179}{\drawarch{\n}}
+		\end{scope}
+\end{tikzpicture}
+
+\newpage
+\begin{tikzpicture}
+\newcommand\order{4}
+		\begin{scope}
+			% Do calculation
+			\pgfmathsetmacro{\steplength}{180 / \order}%
+			\foreach \n in {0, \steplength, ..., 179}{\drawarch{\n}}
+		\end{scope}
+\renewcommand\order{5}
+		\begin{scope}[xshift=13cm]
 			% Do calculation
 			\pgfmathsetmacro{\steplength}{180 / \order}%
 			\foreach \n in {0, \steplength, ..., 179}{\drawarch{\n}}
@@ -88,7 +106,6 @@
 
 
 \newpage
-\renewcommand{\archlength}{5cm}
 \begin{tikzpicture}
 \newcommand\order{7}
 		\begin{scope}
@@ -214,6 +231,29 @@
 \fill (5, 3) rectangle ++(1, 1);
 \fill (5, 5) rectangle ++(1, 1);
 \fill (5, 7) rectangle ++(1, 1);
+\end{tikzpicture}
+
+\newpage
+\renewcommand{\archlength}{10cm}
+\begin{tikzpicture}
+\newcommand\order{4}
+		\begin{scope}
+			% Do calculation
+			\pgfmathsetmacro{\steplength}{180 / \order}%
+			\foreach \n in {0, \steplength, ..., 179}{\drawarch{\n}}
+		\end{scope}
+		\draw[white, line width=1cm] (0, 0) circle (4cm);
+\end{tikzpicture}
+
+\newpage
+\renewcommand{\archlength}{10cm}
+\begin{tikzpicture}
+\newcommand\order{6}
+		\begin{scope}
+			% Do calculation
+			\pgfmathsetmacro{\steplength}{180 / \order}%
+			\foreach \n in {0, \steplength, ..., 179}{\drawarch{\n}}
+		\end{scope}
 \end{tikzpicture}
 
 
