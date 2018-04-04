@@ -14,6 +14,7 @@ phase = exp(0.1 * pi * 1i);
 t1 = real(temp * phase.^order) > threshold;
 t2 = real(temp * phase.^order) < -threshold;
 imagesc(t1 - t2);
+colormap gray;
 
 % Locate bright or dark regions of a marker.
 % Handle the case where one of the black regions have been removed.
@@ -24,7 +25,9 @@ t3 = angle(tempDirection * phase) < angleThreshold;
 t4 = angle(tempDirection * phase) > -angleThreshold;
 mask = 1 - 2 * (t3 & t4);
 imagesc(mask);
+colormap gray;
 
 % Use the mask to invert the expected color.
 figure(3);
 imagesc((t1 - t2) .* mask);
+colormap gray;

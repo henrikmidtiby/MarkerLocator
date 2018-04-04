@@ -20,7 +20,7 @@ from MarkerTracker import MarkerTracker
 # parameters
 print_debug_messages = False
 show_image = True
-list_of_markers_to_find = [5, 6]
+list_of_markers_to_find = [4, 5]
 get_images_to_flush_cam_buffer = 5
 publish_to_ros = False
 markerpose_ros_topic = '/markerlocator/markerpose'
@@ -85,6 +85,7 @@ class CameraDriver:
         # Initialize trackers.
         for marker_order in marker_orders:
             temp = MarkerTracker(marker_order, default_kernel_size, scaling_parameter)
+            temp.track_marker_with_missing_black_leg = False
             self.trackers.append(temp)
             self.old_locations.append(MarkerPose(None, None, None, None, None))
 
@@ -181,7 +182,7 @@ def main():
     if publish_to_ros:
         ros_publisher = RosPublisher(list_of_markers_to_find, markerpose_ros_topic)
 
-    cd = CameraDriver(list_of_markers_to_find, default_kernel_size=55, scaling_parameter=1000, downscale_factor=2)  # Best in robolab.
+    cd = CameraDriver(list_of_markers_to_find, default_kernel_size=55, scaling_parameter=1000, downscale_factor=1)  # Best in robolab.
     # cd = ImageDriver(list_of_markers_to_find, defaultKernelSize = 21)
     t0 = time()
 

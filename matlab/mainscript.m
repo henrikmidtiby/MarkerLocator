@@ -17,3 +17,6 @@ figure(2); imagesc((abs(res))); colormap(gray); axis equal
 ordered = sort(abs(res(:)));
 thres = ordered(ceil(0.9998*length(ordered)));
 figure(4); imagesc(abs(res) > thres); colormap(gray); axis equal;
+
+
+

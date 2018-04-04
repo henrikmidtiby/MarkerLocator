@@ -60,6 +60,7 @@ class MarkerTracker:
         return np.real(kernel), np.imag(kernel)
 
     def locate_marker(self, frame):
+        assert len(frame.shape) == 2, "Input image is not a single channel image."
         self.frame_real = frame.copy()
         self.frame_imag = frame.copy()
 
