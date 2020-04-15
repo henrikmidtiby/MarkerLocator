@@ -7,7 +7,7 @@ Marker tracker for locating n-fold edges in images using convolution.
 import cv2
 import numpy as np
 import math
-from MarkerPose import MarkerPose
+from .MarkerPose import MarkerPose
 
 
 class MarkerTracker:

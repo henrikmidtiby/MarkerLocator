@@ -1,6 +1,6 @@
 import cv2
 import numpy as np
-import MarkerTracker
+import MarkerLocator.MarkerTracker as MarkerTracker
 
 
 def main():
