@@ -8,7 +8,7 @@
 \usepackage{amsmath}
 \usepackage[font=it,labelfont=bf]{caption}
 \usepackage{graphicx}
-\usepackage{subcaption}
+\usepackage{subfig}
 \usepackage{biblatex}
 \usepackage{tikz}
 \usepackage{todonotes}
@@ -294,26 +294,18 @@ figure \ref{figKernelToDetectPlainMarker}.
 % node start (ID_715171165)
 % TEXT = figKernelToDetectPlainMarker
 \begin{figure}
-\begin{subfigure}[t]{0.46\textwidth}
-\includegraphics[width=4cm]{matlabpic/kernelRealPart.png}
-\caption{Real part of kernel.}
-\label{figRealPartOfN4Kernel}
-\end{subfigure}
-\begin{subfigure}[t]{0.46\textwidth}
-\includegraphics[width=4cm]{matlabpic/kernelImagPart.png}
-\caption{Imaginary part of kernel.}
-\label{figImagPartOfN4Kernel}
-\end{subfigure}
-\begin{subfigure}[t]{0.46\textwidth}
-\includegraphics[width=4cm]{matlabpic/kernelAbs.png}
-\caption{Magnitude of kernel.}
-\label{figMagnitudeOfN4Kernel}
-\end{subfigure}
-\begin{subfigure}[t]{0.46\textwidth}
-\includegraphics[width=4cm]{matlabpic/kernelArg.png}
-\caption{Argument of kernel.}
-\label{figArgumentOfN4Kernel}
-\end{subfigure}
+\centering
+\subfloat[Real part of kernel.]{\includegraphics[width=4cm]{matlabpic/kernelRealPart.png}
+\label{figRealPartOfN4Kernel}}
+\hspace{.05\textwidth}%
+\subfloat[Imaginary part of kernel.]{\includegraphics[width=4cm]{matlabpic/kernelImagPart.png}
+\label{figImagPartOfN4Kernel}}
+\hspace{.05\textwidth}%
+\subfloat[Magnitude of kernel.]{\includegraphics[width=4cm]{matlabpic/kernelAbs.png}
+\label{figMagnitudeOfN4Kernel}}
+\hspace{.05\textwidth}%
+\subfloat[Argument of kernel.]{\includegraphics[width=4cm]{matlabpic/kernelArg.png}
+\label{figArgumentOfN4Kernel}}
 \caption{Different views of the complex kernel used for detecting n-fold markers ($n = 4$).}
 \label{figKernelToDetectPlainMarker}
 \end{figure}
@@ -330,19 +322,17 @@ pattern, to best match the input image.
 % node start (ID_949098152)
 % TEXT = figDetectionExample
 \begin{figure}
-\begin{subfigure}[t]{0.46\textwidth}
-\includegraphics[width=5cm]{matlabpic/hubsanwithmarker.jpg}
-\caption{Input image containing markers of order 4 and 5.}
-\label{figHubsanInputImage}
-\end{subfigure}
-\begin{subfigure}[t]{0.46\textwidth}
-\includegraphics[width=5cm]{matlabpic/scaledmarkerresponseinverted.png}
-\caption{Marker detection response in inverted colors. Black denotes a high response to the marker.}
-\label{figHubsanMarkerDetectionReponse}
-\end{subfigure}
+\centering
+\subfloat[Input image containing markers of order 4 and 5.]{\includegraphics[width=5cm]{matlabpic/hubsanwithmarker.jpg}
+\label{figHubsanInputImage}}
+\hfill%
+\subfloat[Marker detection response in inverted colors. Black denotes a high response to the marker.]{\includegraphics[width=5cm]{matlabpic/scaledmarkerresponseinverted.png}
+\label{figHubsanMarkerDetectionReponse}}
 \caption{Marker detection example response.}
 \label{figDetectionExample}
 \end{figure}
+
+
 % node end (ID_949098152)
 % node start (ID_1005629562)
 % TEXT = Quality estimate of detected marker

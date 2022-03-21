@@ -65,7 +65,7 @@
 </stylenode>
 </map_styles>
 </hook>
-<node TEXT="preamble" POSITION="right" ID="ID_327218372" CREATED="1519649201514" MODIFIED="1584002613897"><richcontent TYPE="NOTE" CONTENT-TYPE="xml/">
+<node TEXT="preamble" POSITION="right" ID="ID_327218372" CREATED="1519649201514" MODIFIED="1647849683034"><richcontent TYPE="NOTE" CONTENT-TYPE="xml/">
 <html>
   <head>
     
@@ -90,7 +90,7 @@
       \usepackage{graphicx}
     </p>
     <p>
-      \usepackage{subcaption}
+      \usepackage{subfig}
     </p>
     <p>
       \usepackage{biblatex}
@@ -132,7 +132,8 @@
       \maketitle
     </p>
   </body>
-</html></richcontent>
+</html>
+</richcontent>
 </node>
 <node TEXT="abstract" POSITION="right" ID="ID_1746758294" CREATED="1519649636393" MODIFIED="1519649930245"><richcontent TYPE="NOTE" CONTENT-TYPE="xml/">
 <html>
@@ -872,74 +873,50 @@
   </body>
 </html></richcontent>
 </node>
-<node TEXT="figKernelToDetectPlainMarker" ID="ID_715171165" CREATED="1519650770557" MODIFIED="1520422174479"><richcontent TYPE="NOTE" CONTENT-TYPE="xml/">
+<node TEXT="figKernelToDetectPlainMarker" ID="ID_715171165" CREATED="1519650770557" MODIFIED="1647849915885"><richcontent TYPE="NOTE" CONTENT-TYPE="xml/">
 <html>
   <head>
     
   </head>
   <body>
     <p>
-      <font size="2">\begin{figure} </font>
+      \begin{figure}
     </p>
-    <p>
-      \begin{subfigure}[t]{0.46\textwidth}
+    <p style="margin-top: 0px; margin-bottom: 0px; margin-left: 0px; margin-right: 0px; text-indent: 0px; line-height: 100%">
+      \centering
     </p>
-    <p>
-      <font size="2">\includegraphics[width=4cm]{matlabpic/kernelRealPart.png} </font>
+    <p style="margin-top: 0px; margin-bottom: 0px; margin-left: 0px; margin-right: 0px; text-indent: 0px; line-height: 100%">
+      \subfloat[Real part of kernel.]{\includegraphics[width=4cm]{matlabpic/kernelRealPart.png}
     </p>
-    <p>
-      \caption{Real part of kernel.}
+    <p style="margin-top: 0px; margin-bottom: 0px; margin-left: 0px; margin-right: 0px; text-indent: 0px; line-height: 100%">
+      \label{figRealPartOfN4Kernel}}
     </p>
-    <p>
-      \label{figRealPartOfN4Kernel}
+    <p style="margin-top: 0px; margin-bottom: 0px; margin-left: 0px; margin-right: 0px; text-indent: 0px; line-height: 100%">
+      \hspace{.05\textwidth}%
     </p>
-    <p>
-      \end{subfigure}
+    <p style="margin-top: 0px; margin-bottom: 0px; margin-left: 0px; margin-right: 0px; text-indent: 0px; line-height: 100%">
+      \subfloat[Imaginary part of kernel.]{\includegraphics[width=4cm]{matlabpic/kernelImagPart.png}
     </p>
-    <p>
-      \begin{subfigure}[t]{0.46\textwidth}
+    <p style="margin-top: 0px; margin-bottom: 0px; margin-left: 0px; margin-right: 0px; text-indent: 0px; line-height: 100%">
+      \label{figImagPartOfN4Kernel}}
     </p>
-    <p>
-      <font size="2">\includegraphics[width=4cm]{matlabpic/kernelImagPart.png} </font>
+    <p style="margin-top: 0px; margin-bottom: 0px; margin-left: 0px; margin-right: 0px; text-indent: 0px; line-height: 100%">
+      \hspace{.05\textwidth}%
     </p>
-    <p>
-      \caption{Imaginary part of kernel.}
+    <p style="margin-top: 0px; margin-bottom: 0px; margin-left: 0px; margin-right: 0px; text-indent: 0px; line-height: 100%">
+      \subfloat[Magnitude of kernel.]{\includegraphics[width=4cm]{matlabpic/kernelAbs.png}
     </p>
-    <p>
-      \label{figImagPartOfN4Kernel}
+    <p style="margin-top: 0px; margin-bottom: 0px; margin-left: 0px; margin-right: 0px; text-indent: 0px; line-height: 100%">
+      \label{figMagnitudeOfN4Kernel}}
     </p>
-    <p>
-      \end{subfigure}
+    <p style="margin-top: 0px; margin-bottom: 0px; margin-left: 0px; margin-right: 0px; text-indent: 0px; line-height: 100%">
+      \hspace{.05\textwidth}%
     </p>
-    <p>
-      \begin{subfigure}[t]{0.46\textwidth}
+    <p style="margin-top: 0px; margin-bottom: 0px; margin-left: 0px; margin-right: 0px; text-indent: 0px; line-height: 100%">
+      \subfloat[Argument of kernel.]{\includegraphics[width=4cm]{matlabpic/kernelArg.png}
     </p>
-    <p>
-      <font size="2">\includegraphics[width=4cm]{matlabpic/kernelAbs.png} </font>
-    </p>
-    <p>
-      \caption{Magnitude of kernel.}
-    </p>
-    <p>
-      \label{figMagnitudeOfN4Kernel}
-    </p>
-    <p>
-      \end{subfigure}
-    </p>
-    <p>
-      \begin{subfigure}[t]{0.46\textwidth}
-    </p>
-    <p>
-      <font size="2">\includegraphics[width=4cm]{matlabpic/kernelArg.png} </font>
-    </p>
-    <p>
-      \caption{Argument of kernel.}
-    </p>
-    <p>
-      \label{figArgumentOfN4Kernel}
-    </p>
-    <p>
-      \end{subfigure}
+    <p style="margin-top: 0px; margin-bottom: 0px; margin-left: 0px; margin-right: 0px; text-indent: 0px; line-height: 100%">
+      \label{figArgumentOfN4Kernel}}
     </p>
     <p>
       <font size="2">\caption{Different views of the complex kernel used for detecting n-fold markers ($n = 4$).} </font>
@@ -947,11 +924,12 @@
     <p>
       <font size="2">\label{figKernelToDetectPlainMarker}</font>
     </p>
-    <p>
-      <font size="2">\end{figure}</font>
+    <p style="margin-top: 0px; margin-bottom: 0px; margin-left: 0px; margin-right: 0px; text-indent: 0px; line-height: 100%">
+      \end{figure}
     </p>
   </body>
-</html></richcontent>
+</html>
+</richcontent>
 </node>
 <node TEXT="Detecting the marker" ID="ID_26878778" CREATED="1520421479705" MODIFIED="1520422024305"><richcontent TYPE="NOTE" CONTENT-TYPE="xml/">
 <html>
@@ -980,7 +958,7 @@
   </body>
 </html></richcontent>
 </node>
-<node TEXT="figDetectionExample" ID="ID_949098152" CREATED="1520420931577" MODIFIED="1520588832254"><richcontent TYPE="NOTE" CONTENT-TYPE="xml/">
+<node TEXT="figDetectionExample" ID="ID_949098152" CREATED="1520420931577" MODIFIED="1647849836748"><richcontent TYPE="NOTE" CONTENT-TYPE="xml/">
 <html>
   <head>
     
@@ -990,34 +968,22 @@
       \begin{figure}
     </p>
     <p>
-      \begin{subfigure}[t]{0.46\textwidth}
+      \centering
     </p>
     <p>
-      \includegraphics[width=5cm]{matlabpic/hubsanwithmarker.jpg}
+      \subfloat[Input image containing markers of order 4 and 5.]{\includegraphics[width=5cm]{matlabpic/hubsanwithmarker.jpg}
     </p>
     <p>
-      \caption{Input image containing markers of order 4 and 5.}
+      \label{figHubsanInputImage}}
+    </p>
+    <p style="margin-top: 0px; margin-bottom: 0px; margin-left: 0px; margin-right: 0px; text-indent: 0px">
+      \hfill%
     </p>
     <p>
-      \label{figHubsanInputImage}
+      <font size="2">\subfloat[</font>Marker detection response in inverted colors. Black denotes a high response to the marker.<font size="2">]{\includegraphics[width=5cm]{matlabpic/scaledmarkerresponseinverted.png} </font>
     </p>
     <p>
-      \end{subfigure}
-    </p>
-    <p>
-      \begin{subfigure}[t]{0.46\textwidth}
-    </p>
-    <p>
-      <font size="2">\includegraphics[width=5cm]{matlabpic/scaledmarkerresponseinverted.png} </font>
-    </p>
-    <p>
-      \caption{Marker detection response in inverted colors. Black denotes a high response to the marker.}
-    </p>
-    <p>
-      \label{figHubsanMarkerDetectionReponse}
-    </p>
-    <p>
-      \end{subfigure}
+      \label{figHubsanMarkerDetectionReponse}}
     </p>
     <p>
       \caption{Marker detection example response.}
@@ -1026,10 +992,17 @@
       <font size="2">\label{figDetectionExample}</font>
     </p>
     <p>
-      <font size="2">\end{figure}</font>
+      <font size="2">\end{figure} </font>
+    </p>
+    <p>
+      
+    </p>
+    <p>
+      
     </p>
   </body>
-</html></richcontent>
+</html>
+</richcontent>
 </node>
 </node>
 <node TEXT="Quality estimate of detected marker" FOLDED="true" ID="ID_1005629562" CREATED="1519654170297" MODIFIED="1522870928214"><richcontent TYPE="NOTE" CONTENT-TYPE="xml/">
