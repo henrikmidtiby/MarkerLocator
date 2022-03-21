@@ -1,15 +1,16 @@
-<map version="freeplane 1.6.0">
-<!--To view this file, download free mind mapping software Freeplane from http://freeplane.sourceforge.net -->
+<map version="freeplane 1.9.8">
+<!--To view this file, download free mind mapping software Freeplane from https://www.freeplane.org -->
 <node TEXT="Marker locator" FOLDED="false" ID="ID_806462407" CREATED="1519649159851" MODIFIED="1519649168608" STYLE="oval">
 <font SIZE="18"/>
 <hook NAME="MapStyle" layout="OUTLINE">
     <properties fit_to_viewport="false" show_note_icons="true" edgeColorConfiguration="#808080ff,#ff0000ff,#0000ffff,#00ff00ff,#ff00ffff,#00ffffff,#7c0000ff,#00007cff,#007c00ff,#7c007cff,#007c7cff,#7c7c00ff"/>
 
 <map_styles>
-<stylenode LOCALIZED_TEXT="styles.root_node" STYLE="oval" UNIFORM_SHAPE="true" VGAP_QUANTITY="24.0 pt">
+<stylenode LOCALIZED_TEXT="styles.root_node" STYLE="oval" UNIFORM_SHAPE="true" VGAP_QUANTITY="24 pt">
 <font SIZE="24"/>
 <stylenode LOCALIZED_TEXT="styles.predefined" POSITION="right" STYLE="bubble">
-<stylenode LOCALIZED_TEXT="default" COLOR="#000000" STYLE="fork">
+<stylenode LOCALIZED_TEXT="default" ID="ID_1861774120" COLOR="#000000" STYLE="fork">
+<arrowlink SHAPE="CUBIC_CURVE" COLOR="#000000" WIDTH="2" TRANSPARENCY="200" DASH="" FONT_SIZE="9" FONT_FAMILY="SansSerif" DESTINATION="ID_1861774120" STARTARROW="NONE" ENDARROW="DEFAULT"/>
 <font NAME="SansSerif" SIZE="10" BOLD="false" ITALIC="false"/>
 </stylenode>
 <stylenode LOCALIZED_TEXT="defaultstyle.details"/>
@@ -21,6 +22,7 @@
 <edge STYLE="hide_edge"/>
 <cloud COLOR="#f0f0f0" SHAPE="ROUND_RECT"/>
 </stylenode>
+<stylenode LOCALIZED_TEXT="defaultstyle.selection" BACKGROUND_COLOR="#3f7dff" BORDER_COLOR_LIKE_EDGE="false" BORDER_COLOR="#3f7dff"/>
 </stylenode>
 <stylenode LOCALIZED_TEXT="styles.user-defined" POSITION="right" STYLE="bubble">
 <stylenode LOCALIZED_TEXT="styles.topic" COLOR="#18898b" STYLE="fork">
@@ -37,7 +39,7 @@
 </stylenode>
 </stylenode>
 <stylenode LOCALIZED_TEXT="styles.AutomaticLayout" POSITION="right" STYLE="bubble">
-<stylenode LOCALIZED_TEXT="AutomaticLayout.level.root" COLOR="#000000" STYLE="oval" SHAPE_HORIZONTAL_MARGIN="10.0 pt" SHAPE_VERTICAL_MARGIN="10.0 pt">
+<stylenode LOCALIZED_TEXT="AutomaticLayout.level.root" COLOR="#000000" STYLE="oval" SHAPE_HORIZONTAL_MARGIN="10 pt" SHAPE_VERTICAL_MARGIN="10 pt">
 <font SIZE="18"/>
 </stylenode>
 <stylenode LOCALIZED_TEXT="AutomaticLayout.level,1" COLOR="#0033ff">
@@ -63,8 +65,7 @@
 </stylenode>
 </map_styles>
 </hook>
-<node TEXT="preamble" POSITION="right" ID="ID_327218372" CREATED="1519649201514" MODIFIED="1520589337577"><richcontent TYPE="NOTE">
-
+<node TEXT="preamble" POSITION="right" ID="ID_327218372" CREATED="1519649201514" MODIFIED="1584002613897"><richcontent TYPE="NOTE" CONTENT-TYPE="xml/">
 <html>
   <head>
     
@@ -72,6 +73,9 @@
   <body>
     <p>
       \documentclass{article}
+    </p>
+    <p>
+      \usepackage{setspace}
     </p>
     <p>
       \usepackage{textcomp}
@@ -122,14 +126,15 @@
       \begin{document}
     </p>
     <p>
+      \doublespacing
+    </p>
+    <p>
       \maketitle
     </p>
   </body>
-</html>
-</richcontent>
+</html></richcontent>
 </node>
-<node TEXT="abstract" POSITION="right" ID="ID_1746758294" CREATED="1519649636393" MODIFIED="1519649930245"><richcontent TYPE="NOTE">
-
+<node TEXT="abstract" POSITION="right" ID="ID_1746758294" CREATED="1519649636393" MODIFIED="1519649930245"><richcontent TYPE="NOTE" CONTENT-TYPE="xml/">
 <html>
   <head>
     
@@ -154,11 +159,9 @@
       \end{abstract}
     </p>
   </body>
-</html>
-</richcontent>
+</html></richcontent>
 </node>
-<node TEXT="Introduction" FOLDED="true" POSITION="right" ID="ID_841329411" CREATED="1519649265624" MODIFIED="1519649635558"><richcontent TYPE="NOTE">
-
+<node TEXT="Introduction" POSITION="right" ID="ID_841329411" CREATED="1519649265624" MODIFIED="1519649635558"><richcontent TYPE="NOTE" CONTENT-TYPE="xml/">
 <html>
   <head>
     
@@ -168,11 +171,9 @@
       \section{Introduction}
     </p>
   </body>
-</html>
-</richcontent>
+</html></richcontent>
 <node TEXT="Requirement" ID="ID_508314549" CREATED="1520582097061" MODIFIED="1520582102200">
-<node TEXT="Locate certain objects in images" ID="ID_356287990" CREATED="1520582108898" MODIFIED="1522868194027"><richcontent TYPE="NOTE">
-
+<node TEXT="Locate certain objects in images" ID="ID_356287990" CREATED="1520582108898" MODIFIED="1522868194027"><richcontent TYPE="NOTE" CONTENT-TYPE="xml/">
 <html>
   <head>
     
@@ -191,13 +192,10 @@
       
     </p>
   </body>
-</html>
-
-</richcontent>
+</html></richcontent>
 </node>
 </node>
-<node TEXT="Others approach" ID="ID_259481509" CREATED="1519649989303" MODIFIED="1522868168725"><richcontent TYPE="NOTE">
-
+<node TEXT="Others approach" ID="ID_259481509" CREATED="1519649989303" MODIFIED="1522868168725"><richcontent TYPE="NOTE" CONTENT-TYPE="xml/">
 <html>
   <head>
     
@@ -228,11 +226,8 @@
       
     </p>
   </body>
-</html>
-
-</richcontent>
-<node TEXT="QR codes" ID="ID_709786542" CREATED="1519650594803" MODIFIED="1520585828826"><richcontent TYPE="NOTE">
-
+</html></richcontent>
+<node TEXT="QR codes" ID="ID_709786542" CREATED="1519650594803" MODIFIED="1520585828826"><richcontent TYPE="NOTE" CONTENT-TYPE="xml/">
 <html>
   <head>
     
@@ -254,11 +249,9 @@
       % Scaling down a QR code with the text &quot;test&quot; until it got so small / blurred that it was impossible to read the code.
     </p>
   </body>
-</html>
-</richcontent>
+</html></richcontent>
 </node>
-<node TEXT="ARuCO" ID="ID_362522283" CREATED="1520582123698" MODIFIED="1520586252005"><richcontent TYPE="NOTE">
-
+<node TEXT="ARuCO" ID="ID_362522283" CREATED="1520582123698" MODIFIED="1520586252005"><richcontent TYPE="NOTE" CONTENT-TYPE="xml/">
 <html>
   <head>
     
@@ -274,11 +267,9 @@
       To detect this marker a resolution of at least 18 pixels is likely needed.
     </p>
   </body>
-</html>
-</richcontent>
+</html></richcontent>
 </node>
-<node TEXT="Chess board corners" ID="ID_1150681358" CREATED="1519650590893" MODIFIED="1520587476360"><richcontent TYPE="NOTE">
-
+<node TEXT="Chess board corners" ID="ID_1150681358" CREATED="1519650590893" MODIFIED="1520587476360"><richcontent TYPE="NOTE" CONTENT-TYPE="xml/">
 <html>
   <head>
     
@@ -291,11 +282,9 @@
       The corners can be detected using different techniques, eg. the Harris corner detector \cite{Harris1988}.
     </p>
   </body>
-</html>
-</richcontent>
+</html></richcontent>
 </node>
-<node TEXT="Log spirals" ID="ID_1461471088" CREATED="1519650590893" MODIFIED="1522871322438"><richcontent TYPE="NOTE">
-
+<node TEXT="Log spirals" ID="ID_1461471088" CREATED="1519650590893" MODIFIED="1522871322438"><richcontent TYPE="NOTE" CONTENT-TYPE="xml/">
 <html>
   <head>
     
@@ -314,12 +303,9 @@
       
     </p>
   </body>
-</html>
-
-</richcontent>
+</html></richcontent>
 </node>
-<node TEXT="figExampleMarkerTypes" ID="ID_791196354" CREATED="1522868215636" MODIFIED="1522870714286"><richcontent TYPE="NOTE">
-
+<node TEXT="figExampleMarkerTypes" ID="ID_791196354" CREATED="1522868215636" MODIFIED="1522870714286"><richcontent TYPE="NOTE" CONTENT-TYPE="xml/">
 <html>
   <head>
     
@@ -374,13 +360,10 @@
       \end{figure}
     </p>
   </body>
-</html>
-
-</richcontent>
+</html></richcontent>
 </node>
 </node>
-<node TEXT="Goals and means" FOLDED="true" ID="ID_1668285930" CREATED="1519649286292" MODIFIED="1522867798416"><richcontent TYPE="NOTE">
-
+<node TEXT="Goals and means" FOLDED="true" ID="ID_1668285930" CREATED="1519649286292" MODIFIED="1522867798416"><richcontent TYPE="NOTE" CONTENT-TYPE="xml/">
 <html>
   <head>
     
@@ -411,9 +394,7 @@
       
     </p>
   </body>
-</html>
-
-</richcontent>
+</html></richcontent>
 <node TEXT="Define a marker that is robust to detect." ID="ID_1518320303" CREATED="1519649299340" MODIFIED="1519649311949"/>
 <node TEXT="Require no segmentation for detection." ID="ID_674566423" CREATED="1519649314678" MODIFIED="1519649325661"/>
 <node TEXT="A marker that can be found with limited resolution" ID="ID_1039386918" CREATED="1519650625529" MODIFIED="1519650644489"/>
@@ -428,8 +409,7 @@
 </node>
 <node TEXT="Structure of this paper" ID="ID_1583702410" CREATED="1520583682681" MODIFIED="1520584666706"/>
 </node>
-<node TEXT="Materials and methods" POSITION="right" ID="ID_678276898" CREATED="1519649358598" MODIFIED="1519651096520"><richcontent TYPE="NOTE">
-
+<node TEXT="Materials and methods" POSITION="right" ID="ID_678276898" CREATED="1519649358598" MODIFIED="1519651096520"><richcontent TYPE="NOTE" CONTENT-TYPE="xml/">
 <html>
   <head>
     
@@ -439,10 +419,8 @@
       \section{Materials and methods}
     </p>
   </body>
-</html>
-</richcontent>
-<node TEXT="Convolution for detection of markers with fixed rotation" FOLDED="true" ID="ID_357477363" CREATED="1522870898430" MODIFIED="1522871114510"><richcontent TYPE="NOTE">
-
+</html></richcontent>
+<node TEXT="Convolution for detection of markers with fixed rotation" ID="ID_357477363" CREATED="1522870898430" MODIFIED="1522871114510"><richcontent TYPE="NOTE" CONTENT-TYPE="xml/">
 <html>
   <head>
     
@@ -452,11 +430,8 @@
       \subsection{Template matching}
     </p>
   </body>
-</html>
-
-</richcontent>
-<node TEXT="Template matching" ID="ID_525900738" CREATED="1522871136757" MODIFIED="1522871241263"><richcontent TYPE="NOTE">
-
+</html></richcontent>
+<node TEXT="Template matching" ID="ID_525900738" CREATED="1522871136757" MODIFIED="1522871241263"><richcontent TYPE="NOTE" CONTENT-TYPE="xml/">
 <html>
   <head>
     
@@ -469,13 +444,10 @@
       \url{https://docs.opencv.org/trunk/d4/dc6/tutorial_py_template_matching.html}
     </p>
   </body>
-</html>
-
-</richcontent>
+</html></richcontent>
 </node>
 </node>
-<node TEXT="Fourier transform" FOLDED="true" ID="ID_1711581391" CREATED="1519649371614" MODIFIED="1519890814177"><richcontent TYPE="NOTE">
-
+<node TEXT="Fourier transform" ID="ID_1711581391" CREATED="1519649371614" MODIFIED="1519890814177"><richcontent TYPE="NOTE" CONTENT-TYPE="xml/">
 <html>
   <head>
     
@@ -485,11 +457,8 @@
       \subsection{Fourier transform}
     </p>
   </body>
-</html>
-
-</richcontent>
-<node TEXT="Discrete fourier transform" ID="ID_1907073549" CREATED="1519654285262" MODIFIED="1519740614813"><richcontent TYPE="NOTE">
-
+</html></richcontent>
+<node TEXT="Discrete fourier transform" ID="ID_1907073549" CREATED="1519654285262" MODIFIED="1519740614813"><richcontent TYPE="NOTE" CONTENT-TYPE="xml/">
 <html>
   <head>
     
@@ -511,11 +480,9 @@
       \]
     </p>
   </body>
-</html>
-</richcontent>
+</html></richcontent>
 </node>
-<node TEXT="Notice the pattern" ID="ID_1923185394" CREATED="1519654102324" MODIFIED="1519740519456"><richcontent TYPE="NOTE">
-
+<node TEXT="Notice the pattern" ID="ID_1923185394" CREATED="1519654102324" MODIFIED="1519740519456"><richcontent TYPE="NOTE" CONTENT-TYPE="xml/">
 <html>
   <head>
     
@@ -528,11 +495,9 @@
       In the standard situation the set of observations is sampled along a linear dimension.
     </p>
   </body>
-</html>
-</richcontent>
+</html></richcontent>
 </node>
-<node TEXT="Apply the pattern to a 2D input" ID="ID_396153378" CREATED="1519654134049" MODIFIED="1519740815381"><richcontent TYPE="NOTE">
-
+<node TEXT="Apply the pattern to a 2D input" ID="ID_396153378" CREATED="1519654134049" MODIFIED="1519740815381"><richcontent TYPE="NOTE" CONTENT-TYPE="xml/">
 <html>
   <head>
     
@@ -560,12 +525,10 @@
       and which is possible to detect with the convolution based approach described above.
     </p>
   </body>
-</html>
-</richcontent>
+</html></richcontent>
 </node>
 </node>
-<node TEXT="Square wave" FOLDED="true" ID="ID_1411063844" CREATED="1519890770249" MODIFIED="1522870928687"><richcontent TYPE="NOTE">
-
+<node TEXT="Square wave" ID="ID_1411063844" CREATED="1519890770249" MODIFIED="1522870928687"><richcontent TYPE="NOTE" CONTENT-TYPE="xml/">
 <html>
   <head>
     
@@ -575,11 +538,8 @@
       \subsection{Square wave}
     </p>
   </body>
-</html>
-
-</richcontent>
-<node TEXT="Square wave sine expansion" ID="ID_1002027442" CREATED="1519890821774" MODIFIED="1519891638285"><richcontent TYPE="NOTE">
-
+</html></richcontent>
+<node TEXT="Square wave sine expansion" ID="ID_1002027442" CREATED="1519890821774" MODIFIED="1519891638285"><richcontent TYPE="NOTE" CONTENT-TYPE="xml/">
 <html>
   <head>
     
@@ -604,15 +564,13 @@
       of the Fourier series.
     </p>
   </body>
-</html>
-</richcontent>
+</html></richcontent>
 </node>
 <node TEXT="Square wave expansion in complex exponentials" ID="ID_973884286" CREATED="1519892532441" MODIFIED="1519892544741">
 <node TEXT="Shifts in the pattern can be detected by the phase of the determined fourier coefficients" ID="ID_72772172" CREATED="1519892585183" MODIFIED="1519892606079"/>
 </node>
 </node>
-<node TEXT="Plain marker" FOLDED="true" ID="ID_1124304539" CREATED="1519650746023" MODIFIED="1522870928536"><richcontent TYPE="NOTE">
-
+<node TEXT="Plain marker" ID="ID_1124304539" CREATED="1519650746023" MODIFIED="1522870928536"><richcontent TYPE="NOTE" CONTENT-TYPE="xml/">
 <html>
   <head>
     
@@ -622,11 +580,8 @@
       \subsection{The plain marker}
     </p>
   </body>
-</html>
-
-</richcontent>
-<node TEXT="Bending a square wave" ID="ID_1829855072" CREATED="1519891564086" MODIFIED="1519892164977"><richcontent TYPE="NOTE">
-
+</html></richcontent>
+<node TEXT="Bending a square wave" ID="ID_1829855072" CREATED="1519891564086" MODIFIED="1519892164977"><richcontent TYPE="NOTE" CONTENT-TYPE="xml/">
 <html>
   <head>
     
@@ -642,14 +597,12 @@
       The generated pattern has a well defined spatial center and as will be seen later, the pattern can be detected using convolution.
     </p>
   </body>
-</html>
-</richcontent>
+</html></richcontent>
 </node>
 <node TEXT="Alternative name" ID="ID_1746996113" CREATED="1519896445513" MODIFIED="1519896449605">
 <node TEXT="https://en.wikipedia.org/wiki/Rotational_symmetry#Discrete_rotational_symmetry" ID="ID_1285158861" CREATED="1519896450555" MODIFIED="1519896451385"/>
 </node>
-<node TEXT="figBendingASquareWaveToACircularPattern" ID="ID_1111025082" CREATED="1519740886430" MODIFIED="1519892025340"><richcontent TYPE="NOTE">
-
+<node TEXT="figBendingASquareWaveToACircularPattern" ID="ID_1111025082" CREATED="1519740886430" MODIFIED="1519892025340"><richcontent TYPE="NOTE" CONTENT-TYPE="xml/">
 <html>
   <head>
     
@@ -692,11 +645,9 @@
       \end{figure}
     </p>
   </body>
-</html>
-</richcontent>
+</html></richcontent>
 </node>
-<node TEXT="Families of markers" ID="ID_323744886" CREATED="1519892218750" MODIFIED="1519892363782"><richcontent TYPE="NOTE">
-
+<node TEXT="Families of markers" ID="ID_323744886" CREATED="1519892218750" MODIFIED="1519892363782"><richcontent TYPE="NOTE" CONTENT-TYPE="xml/">
 <html>
   <head>
     
@@ -718,11 +669,9 @@
       $n = 2$, $n = 3$ and $n = 4$.
     </p>
   </body>
-</html>
-</richcontent>
+</html></richcontent>
 </node>
-<node TEXT="figPlainMarkers" ID="ID_1460525345" CREATED="1519650770557" MODIFIED="1520500421840"><richcontent TYPE="NOTE">
-
+<node TEXT="figPlainMarkers" ID="ID_1460525345" CREATED="1519650770557" MODIFIED="1520500421840"><richcontent TYPE="NOTE" CONTENT-TYPE="xml/">
 <html>
   <head>
     
@@ -843,12 +792,10 @@
       <font size="2">\end{figure}</font>
     </p>
   </body>
-</html>
-</richcontent>
+</html></richcontent>
 </node>
 </node>
-<node TEXT="Detection of a marker" ID="ID_1931572391" CREATED="1519649344486" MODIFIED="1522870928374"><richcontent TYPE="NOTE">
-
+<node TEXT="Detection of a marker" ID="ID_1931572391" CREATED="1519649344486" MODIFIED="1522870928374"><richcontent TYPE="NOTE" CONTENT-TYPE="xml/">
 <html>
   <head>
     
@@ -858,11 +805,8 @@
       \subsection{Detection of a marker}
     </p>
   </body>
-</html>
-
-</richcontent>
-<node TEXT="Use a convolution to detect a certain square wave" ID="ID_166592580" CREATED="1519893319295" MODIFIED="1519893824379"><richcontent TYPE="NOTE">
-
+</html></richcontent>
+<node TEXT="Use a convolution to detect a certain square wave" ID="ID_166592580" CREATED="1519893319295" MODIFIED="1519893824379"><richcontent TYPE="NOTE" CONTENT-TYPE="xml/">
 <html>
   <head>
     
@@ -884,11 +828,9 @@
       \]
     </p>
   </body>
-</html>
-</richcontent>
+</html></richcontent>
 </node>
-<node TEXT="Use a convolution to detect an n-fold edge" ID="ID_1719695254" CREATED="1519893826452" MODIFIED="1522871537578"><richcontent TYPE="NOTE">
-
+<node TEXT="Use a convolution to detect an n-fold edge" ID="ID_1719695254" CREATED="1519893826452" MODIFIED="1522871537578"><richcontent TYPE="NOTE" CONTENT-TYPE="xml/">
 <html>
   <head>
     
@@ -928,12 +870,9 @@
       
     </p>
   </body>
-</html>
-
-</richcontent>
+</html></richcontent>
 </node>
-<node TEXT="figKernelToDetectPlainMarker" ID="ID_715171165" CREATED="1519650770557" MODIFIED="1520422174479"><richcontent TYPE="NOTE">
-
+<node TEXT="figKernelToDetectPlainMarker" ID="ID_715171165" CREATED="1519650770557" MODIFIED="1520422174479"><richcontent TYPE="NOTE" CONTENT-TYPE="xml/">
 <html>
   <head>
     
@@ -1012,11 +951,9 @@
       <font size="2">\end{figure}</font>
     </p>
   </body>
-</html>
-</richcontent>
+</html></richcontent>
 </node>
-<node TEXT="Detecting the marker" ID="ID_26878778" CREATED="1520421479705" MODIFIED="1520422024305"><richcontent TYPE="NOTE">
-
+<node TEXT="Detecting the marker" ID="ID_26878778" CREATED="1520421479705" MODIFIED="1520422024305"><richcontent TYPE="NOTE" CONTENT-TYPE="xml/">
 <html>
   <head>
     
@@ -1041,11 +978,9 @@
       pattern, to best match the input image.
     </p>
   </body>
-</html>
-</richcontent>
+</html></richcontent>
 </node>
-<node TEXT="figDetectionExample" ID="ID_949098152" CREATED="1520420931577" MODIFIED="1520588832254"><richcontent TYPE="NOTE">
-
+<node TEXT="figDetectionExample" ID="ID_949098152" CREATED="1520420931577" MODIFIED="1520588832254"><richcontent TYPE="NOTE" CONTENT-TYPE="xml/">
 <html>
   <head>
     
@@ -1094,12 +1029,10 @@
       <font size="2">\end{figure}</font>
     </p>
   </body>
-</html>
-</richcontent>
+</html></richcontent>
 </node>
 </node>
-<node TEXT="Quality estimate of detected marker" FOLDED="true" ID="ID_1005629562" CREATED="1519654170297" MODIFIED="1522870928214"><richcontent TYPE="NOTE">
-
+<node TEXT="Quality estimate of detected marker" FOLDED="true" ID="ID_1005629562" CREATED="1519654170297" MODIFIED="1522870928214"><richcontent TYPE="NOTE" CONTENT-TYPE="xml/">
 <html>
   <head>
     
@@ -1109,11 +1042,8 @@
       \subsection{Estimating the quality of the detected marker}
     </p>
   </body>
-</html>
-
-</richcontent>
-<node TEXT="Issue with markers with different orders" ID="ID_1644690044" CREATED="1520422213886" MODIFIED="1522867979528"><richcontent TYPE="NOTE">
-
+</html></richcontent>
+<node TEXT="Issue with markers with different orders" ID="ID_1644690044" CREATED="1520422213886" MODIFIED="1522867979528"><richcontent TYPE="NOTE" CONTENT-TYPE="xml/">
 <html>
   <head>
     
@@ -1144,12 +1074,9 @@
       
     </p>
   </body>
-</html>
-
-</richcontent>
+</html></richcontent>
 </node>
-<node TEXT="Answer the question, when is a marker detected?" ID="ID_1021463738" CREATED="1519893159472" MODIFIED="1522867983946"><richcontent TYPE="NOTE">
-
+<node TEXT="Answer the question, when is a marker detected?" ID="ID_1021463738" CREATED="1519893159472" MODIFIED="1522867983946"><richcontent TYPE="NOTE" CONTENT-TYPE="xml/">
 <html>
   <head>
     
@@ -1180,12 +1107,9 @@
       
     </p>
   </body>
-</html>
-
-</richcontent>
+</html></richcontent>
 </node>
-<node TEXT="Properties of a good marker" ID="ID_874430857" CREATED="1520423410429" MODIFIED="1522867986572"><richcontent TYPE="NOTE">
-
+<node TEXT="Properties of a good marker" ID="ID_874430857" CREATED="1520423410429" MODIFIED="1522867986572"><richcontent TYPE="NOTE" CONTENT-TYPE="xml/">
 <html>
   <head>
     
@@ -1210,12 +1134,9 @@
       
     </p>
   </body>
-</html>
-
-</richcontent>
+</html></richcontent>
 </node>
-<node TEXT="Formula for t" ID="ID_570843519" CREATED="1519901265613" MODIFIED="1522867989530"><richcontent TYPE="NOTE">
-
+<node TEXT="Formula for t" ID="ID_570843519" CREATED="1519901265613" MODIFIED="1522867989530"><richcontent TYPE="NOTE" CONTENT-TYPE="xml/">
 <html>
   <head>
     
@@ -1234,12 +1155,9 @@
       
     </p>
   </body>
-</html>
-
-</richcontent>
+</html></richcontent>
 </node>
-<node TEXT="Interpretation of $t$ values" ID="ID_1601985717" CREATED="1520423640965" MODIFIED="1522867991376"><richcontent TYPE="NOTE">
-
+<node TEXT="Interpretation of $t$ values" ID="ID_1601985717" CREATED="1520423640965" MODIFIED="1522867991376"><richcontent TYPE="NOTE" CONTENT-TYPE="xml/">
 <html>
   <head>
     
@@ -1261,12 +1179,9 @@
       
     </p>
   </body>
-</html>
-
-</richcontent>
+</html></richcontent>
 </node>
-<node TEXT="Formula for quality" ID="ID_945595388" CREATED="1519901265613" MODIFIED="1522867993195"><richcontent TYPE="NOTE">
-
+<node TEXT="Formula for quality" ID="ID_945595388" CREATED="1519901265613" MODIFIED="1522867993195"><richcontent TYPE="NOTE" CONTENT-TYPE="xml/">
 <html>
   <head>
     
@@ -1285,12 +1200,9 @@
       
     </p>
   </body>
-</html>
-
-</richcontent>
+</html></richcontent>
 </node>
-<node TEXT="The quality score" ID="ID_228500983" CREATED="1520500821890" MODIFIED="1522867995036"><richcontent TYPE="NOTE">
-
+<node TEXT="The quality score" ID="ID_228500983" CREATED="1520500821890" MODIFIED="1522867995036"><richcontent TYPE="NOTE" CONTENT-TYPE="xml/">
 <html>
   <head>
     
@@ -1309,12 +1221,9 @@
       
     </p>
   </body>
-</html>
-
-</richcontent>
+</html></richcontent>
 </node>
-<node TEXT="figQualityEstimationProcess" ID="ID_408776078" CREATED="1520501079353" MODIFIED="1522867997823"><richcontent TYPE="NOTE">
-
+<node TEXT="figQualityEstimationProcess" ID="ID_408776078" CREATED="1520501079353" MODIFIED="1522867997823"><richcontent TYPE="NOTE" CONTENT-TYPE="xml/">
 <html>
   <head>
     
@@ -1360,13 +1269,10 @@
       
     </p>
   </body>
-</html>
-
-</richcontent>
+</html></richcontent>
 </node>
 </node>
-<node TEXT="Oriented marker" ID="ID_887206754" CREATED="1519650975623" MODIFIED="1522870927818"><richcontent TYPE="NOTE">
-
+<node TEXT="Oriented marker" ID="ID_887206754" CREATED="1519650975623" MODIFIED="1522870927818"><richcontent TYPE="NOTE" CONTENT-TYPE="xml/">
 <html>
   <head>
     
@@ -1376,11 +1282,8 @@
       \subsection{The oriented marker}
     </p>
   </body>
-</html>
-
-</richcontent>
-<node TEXT="Removing a leg" ID="ID_810182894" CREATED="1519892648136" MODIFIED="1522868017366"><richcontent TYPE="NOTE">
-
+</html></richcontent>
+<node TEXT="Removing a leg" ID="ID_810182894" CREATED="1519892648136" MODIFIED="1522868017366"><richcontent TYPE="NOTE" CONTENT-TYPE="xml/">
 <html>
   <head>
     
@@ -1408,12 +1311,9 @@
       
     </p>
   </body>
-</html>
-
-</richcontent>
+</html></richcontent>
 </node>
-<node TEXT="figPlainMarkers" ID="ID_221364124" CREATED="1519650770557" MODIFIED="1520500801412"><richcontent TYPE="NOTE">
-
+<node TEXT="figPlainMarkers" ID="ID_221364124" CREATED="1519650770557" MODIFIED="1520500801412"><richcontent TYPE="NOTE" CONTENT-TYPE="xml/">
 <html>
   <head>
     
@@ -1543,14 +1443,12 @@
       <font size="2">\end{figure}</font>
     </p>
   </body>
-</html>
-</richcontent>
+</html></richcontent>
 </node>
 <node TEXT="Show modified quality template" ID="ID_1535548336" CREATED="1520589442670" MODIFIED="1520589452903"/>
 </node>
 </node>
-<node TEXT="Results" FOLDED="true" POSITION="right" ID="ID_854015171" CREATED="1519649362265" MODIFIED="1520589102556"><richcontent TYPE="NOTE">
-
+<node TEXT="Results" FOLDED="true" POSITION="right" ID="ID_854015171" CREATED="1519649362265" MODIFIED="1520589102556"><richcontent TYPE="NOTE" CONTENT-TYPE="xml/">
 <html>
   <head>
     
@@ -1560,10 +1458,8 @@
       \section{Results}
     </p>
   </body>
-</html>
-</richcontent>
-<node TEXT="Required size for detecting a marker" ID="ID_129367257" CREATED="1520589176808" MODIFIED="1520589400245"><richcontent TYPE="NOTE">
-
+</html></richcontent>
+<node TEXT="Required size for detecting a marker" ID="ID_129367257" CREATED="1520589176808" MODIFIED="1520589400245"><richcontent TYPE="NOTE" CONTENT-TYPE="xml/">
 <html>
   <head>
     
@@ -1579,11 +1475,9 @@
       \todo[inline]{Give results on the running time of the marker detector and how it scales with image and kernel size.}
     </p>
   </body>
-</html>
-</richcontent>
+</html></richcontent>
 </node>
-<node TEXT="Implementation is available at github" ID="ID_1250748141" CREATED="1520589131494" MODIFIED="1520589314932"><richcontent TYPE="NOTE">
-
+<node TEXT="Implementation is available at github" ID="ID_1250748141" CREATED="1520589131494" MODIFIED="1520589314932"><richcontent TYPE="NOTE" CONTENT-TYPE="xml/">
 <html>
   <head>
     
@@ -1596,12 +1490,10 @@
       \url{https://github.com/henrikmidtiby/markerlocator}.
     </p>
   </body>
-</html>
-</richcontent>
+</html></richcontent>
 </node>
 </node>
-<node TEXT="Conclusion" POSITION="right" ID="ID_1640560548" CREATED="1519649364655" MODIFIED="1520589102888"><richcontent TYPE="NOTE">
-
+<node TEXT="Conclusion" POSITION="right" ID="ID_1640560548" CREATED="1519649364655" MODIFIED="1520589102888"><richcontent TYPE="NOTE" CONTENT-TYPE="xml/">
 <html>
   <head>
     
@@ -1611,11 +1503,9 @@
       \section{Conclusion}
     </p>
   </body>
-</html>
-</richcontent>
+</html></richcontent>
 </node>
-<node TEXT="References" POSITION="right" ID="ID_1395737850" CREATED="1519649937680" MODIFIED="1520589103040"><richcontent TYPE="NOTE">
-
+<node TEXT="References" POSITION="right" ID="ID_1395737850" CREATED="1519649937680" MODIFIED="1520589103040"><richcontent TYPE="NOTE" CONTENT-TYPE="xml/">
 <html>
   <head>
     
@@ -1625,11 +1515,9 @@
       \printbibliography
     </p>
   </body>
-</html>
-</richcontent>
+</html></richcontent>
 </node>
-<node TEXT="endofdocument" POSITION="right" ID="ID_1361899356" CREATED="1519649237071" MODIFIED="1520589103475"><richcontent TYPE="NOTE">
-
+<node TEXT="endofdocument" POSITION="right" ID="ID_1361899356" CREATED="1519649237071" MODIFIED="1520589103475"><richcontent TYPE="NOTE" CONTENT-TYPE="xml/">
 <html>
   <head>
     
@@ -1639,8 +1527,7 @@
       \end{document}
     </p>
   </body>
-</html>
-</richcontent>
+</html></richcontent>
 </node>
 </node>
 </map>
