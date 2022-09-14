@@ -86,7 +86,7 @@ class MarkerTracker:
         self.orientation = (math.atan2(-real_value, imag_value) - math.pi / 2) / self.order
 
         max_value = 0
-        max_orientation = 0
+        max_orientation = self.orientation
         search_distance = self.kernel_size / 3
         for k in range(self.order):
             orient = self.orientation + 2 * k * math.pi / self.order
